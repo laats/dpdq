@@ -5,7 +5,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 22:20:31 2013
-# Modified:     Thu Jun 20 15:19:12 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu Jun 20 18:03:30 2013 (Staal Vinterbo) staal@mats
 # Language:     BSDmakefile
 # Package:      N/A
 # Status:       Experimental
@@ -34,7 +34,7 @@ SRCDIR = ./src
 SCRIPTDIR = ./scripts
 BINSTALLDIR = /usr/local/bin
 DOCDIR = ./doc
-DOCSRC = $(DOCDIR)/docstring.txt $(DOCDIR)/*.png
+DOCSRC = $(DOCDIR)/docstring.mdwn $(DOCDIR)/*.png
 
 PSRC = $(SRCDIR)/*.py $(SCRIPTDIR)/*.py setup.py
 
@@ -45,7 +45,7 @@ options:
 	@echo 'to build and install do: make builds; sudo make install'
 	@echo 'to see what each target does, do: make -n target'
 
-builds: egg sdist
+builds: egg sdist demo.tgz
 
 clean: 
 	rm -f *.pyc *.aux *.log 
@@ -53,12 +53,12 @@ clean:
 MANIFEST.in: MANIFEST.template Makefile
 	cat MANIFEST.template > MANIFEST.in
 
-$(SRCDIR)/docstring.py: $(DOCDIR)/docstring.txt
+$(SRCDIR)/docstring.py: $(DOCDIR)/docstring.mdwn
 	echo '"""dpdq: differentially private data queries' > $@
 	pandoc -f markdown -t rst  $< >> $@
 	echo '"""' >> $@
 
-readme.txt: $(DOCDIR)/docstring.txt
+readme.txt: $(DOCDIR)/docstring.mdwn
 	pandoc -t plain $< > $@
 
 

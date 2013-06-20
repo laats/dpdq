@@ -3,16 +3,30 @@
 #
 # File:         runtest.sh
 # RCS:          $Header: $
-# Description:  test deployment of dpdq system. Creates two directories:
-#               /tmp/dpdqclient /tmp/dpdqserver
+# Description:  test deployment of dpdq system. Creates directories:
+#               /tmp/dpdq/[cqr]
 # Author:       Staal Vinterbo
 # Created:      Fri May 10 16:44:21 2013
-# Modified:     Thu Jun 20 15:21:39 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu Jun 20 15:37:13 2013 (Staal Vinterbo) staal@mats
 # Language:     Shell-script
 # Package:      N/A
 # Status:       Experimental
 #
 # (c) Copyright 2013, Staal Vinterbo, all rights reserved.
+#
+# demo.sh is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# demo.sh is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with demo.sh; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 ################################################################################
 

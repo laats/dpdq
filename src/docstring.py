@@ -223,11 +223,13 @@ risk associated with privacy safeguards is necessary for balancing risk
 and information shared, allowing selection of appropriate safeguards, as
 well as providing guarantees regarding privacy to individuals.
 
-Differential privacy is an emerging standard for quantifying privacy
-risk to an individual incurred by the disclosure of information computed
-from a dataset. Risk measured by differential privacy can be tracked
-over time, different datasets, and information computed by different
-methods, allowing for implementation of risk accounting policies.
+`Differential
+privacy <http://en.wikipedia.org/wiki/Differential_privacy>`__ is an
+emerging standard for quantifying privacy risk to an individual incurred
+by the disclosure of information computed from a dataset. Risk measured
+by differential privacy can be tracked over time, different datasets,
+and information computed by different methods, allowing for
+implementation of risk accounting policies.
 
 *DPDQ* aims at being a lightweight, scalable, and easily deployable
 networked system for making information in datasets available in a
@@ -1490,9 +1492,9 @@ Automated deployment example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A shell script that deploys a small demonstration system can be found in
-`this <./runtest-single.tgz>`__ gzipped tar archive. The archive also
-contains a directory with CSV files that are used as datasets, as well
-as a small python program to help with key generation.
+`this <./demo.tgz>`__ gzipped tar archive. The archive also contains a
+directory with CSV files that are used as datasets, as well as a small
+python program to help with key generation.
 
 The test deployment involves the two servers and a user Alice. The
 script
