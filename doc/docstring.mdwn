@@ -1,6 +1,6 @@
 % DPDQ: Differentially Private Data Queries
 % Staal A. Vinterbo
-% Time-stamp: <2013-06-20 18:43:44 staal>
+% Time-stamp: <2013-06-21 11:18:42 staal>
 
 <!-- # DPDQ: Differentially Private Data Queries -->
 
@@ -13,7 +13,9 @@
 **Homepage**
   ~ Homepage [here][homepage].
 **Download**
-  ~ Download [here][download].
+  ~ Download installable Python package [here][download].
+**Source Code**
+  ~ Git clone URL: `git://ptg.ucsd.edu/dpdq.git`
 
 [download]: http://ptg.ucsd.edu/~staal/dpdq/dist "DPDQ Repository"
 [homepage]: http://ptg.ucsd.edu/~staal/dpdq      "DPDQ Homepage"
@@ -37,7 +39,7 @@ usage: dpdq_qserver.py [-h] [-k KEY] [-g GPGHOME] [-p QUERY_SERVER_PORT]
                        [-v] [--allow_alias]
                        database_url
 
-Query processing server (version: 0.17). This program allows clients to
+Query processing server (version: 0.19). This program allows clients to
 request information about datasets in the database it is connected to. As
 these requests potentially carry privacy risk, a risk accountant is queried
 for adherence to the current risk policy before serving the information to the
@@ -90,7 +92,7 @@ usage: dpdq_rserver.py [-h] [-k KEY] [-P RISK_SERVER_PORT]
                        [-l LOGFILE] [-v]
                        database_url
 
-Risk Accounting Server (version: 0.17). This program answers requests about
+Risk Accounting Server (version: 0.19). This program answers requests about
 users' privacy risk history and whether a user is allowed to incur further
 risk according to the current risk policy.
 
@@ -126,9 +128,9 @@ optional arguments:
 ~~~~
 usage: dpdq_cli.py [-h] [-k KEY] [-s QUERY_SERVER_KEY]
                    [-a QUERY_SERVER_ADDRESS] [-p QUERY_SERVER_PORT]
-                   [-g GPGHOME] [-u USER] [-U URL] [-f] [-v] [-n]
+                   [-g GPGHOME] [-u USER] [-U URL] [-f] [-v] [-n] [-d]
 
-Text based query client (version: 0.17). This program allows requesting
+Text based query client (version: 0.19). This program allows requesting
 information from and about datasets from a query processing server.
 
 optional arguments:
@@ -154,6 +156,7 @@ optional arguments:
                         of commands.
   -v, --version         display version number and exit.
   -n, --nowrite         disallow writing results to file.
+  -d, --debug           display debug info.
 ~~~~
 
 
