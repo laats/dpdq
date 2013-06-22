@@ -7,7 +7,9 @@ Availability
 Homepage
     Homepage here.
 Download
-    Download here.
+    Download installable Python package here.
+Source Code
+    Git clone URL: git://ptg.ucsd.edu/dpdq.git
 
 Synopsis
 --------
@@ -22,10 +24,10 @@ $ dpdq_qserver.py -h
     usage: dpdq_qserver.py [-h] [-k KEY] [-g GPGHOME] [-p QUERY_SERVER_PORT]
                            [-S RISK_SERVER_KEY] [-A RISK_SERVER_ADDRESS]
                            [-P RISK_SERVER_PORT] [-l LOGFILE] [-q QUERYMODULE]
-                           [-v] [--allow_alias]
+                           [-v] [--allow_alias] [--allow_echo]
                            database_url
 
-    Query processing server (version: 0.17). This program allows clients to
+    Query processing server (version: 0.20). This program allows clients to
     request information about datasets in the database it is connected to. As
     these requests potentially carry privacy risk, a risk accountant is queried
     for adherence to the current risk policy before serving the information to the
@@ -65,9 +67,10 @@ $ dpdq_qserver.py -h
                             processors (default: "None").
       -v, --version         display version number and exit.
       --allow_alias         Allow connecting clients to query on behalf of another
-                            users.This should only be allowed if the client is
-                            trusted, e.g., implements externalidentification and
+                            user. This should only be allowed if the client is
+                            trusted, e.g., implements external identification and
                             authentication.
+      --allow_echo          Allow echo requests. Useful for debugging clients.
 
 $ dpdq_rserver.py -h
 
@@ -76,7 +79,7 @@ $ dpdq_rserver.py -h
                            [-l LOGFILE] [-v]
                            database_url
 
-    Risk Accounting Server (version: 0.17). This program answers requests about
+    Risk Accounting Server (version: 0.20). This program answers requests about
     users' privacy risk history and whether a user is allowed to incur further
     risk according to the current risk policy.
 
@@ -110,9 +113,9 @@ $ dpdq_cli.py -h
 
     usage: dpdq_cli.py [-h] [-k KEY] [-s QUERY_SERVER_KEY]
                        [-a QUERY_SERVER_ADDRESS] [-p QUERY_SERVER_PORT]
-                       [-g GPGHOME] [-u USER] [-U URL] [-f] [-v] [-n]
+                       [-g GPGHOME] [-u USER] [-U URL] [-f] [-v] [-n] [-d]
 
-    Text based query client (version: 0.17). This program allows requesting
+    Text based query client (version: 0.20). This program allows requesting
     information from and about datasets from a query processing server.
 
     optional arguments:
@@ -138,6 +141,7 @@ $ dpdq_cli.py -h
                             of commands.
       -v, --version         display version number and exit.
       -n, --nowrite         disallow writing results to file.
+      -d, --debug           display debug info.
 
 Supporting scripts
 

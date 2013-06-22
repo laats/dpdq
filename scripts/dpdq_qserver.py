@@ -6,7 +6,7 @@
 # Description:  Encrypted query server, by default echo. Handles multiple clients
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 16:05:34 2013
-# Modified:     Wed Jun 12 23:41:01 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sat Jun 22 10:25:07 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -52,7 +52,8 @@ import signal
 QTYPE_META = 0
 QTYPE_INFO = 1
 QTYPE_RISK = 2
-QTYPE_MAX = 2
+QTYPE_ECHO = 3
+QTYPE_MAX = 3
 
 # response codes
 STATUS_OK = 0
@@ -72,8 +73,17 @@ class Address:
 
 class ServerParameters:
     '''collection of server parameters'''
-    def __init__(self, keyfp, gpg, handler, handler_return, risk_address, risk_fp,
-                 frontend, allow_alias = False):
+    def __init__(self,
+                 keyfp,
+                 gpg,
+                 handler,
+                 handler_return,
+                 risk_address,
+                 risk_fp,
+                 frontend,
+                 allow_alias = False,
+                 allow_echo=False):
+
         self.gpg = gpg # gpg instance
         self.keyfp = keyfp # own gpg key fingerprint
         self.handle_init = handler  # handle incoming request until risk accountant gets queried
@@ -86,6 +96,7 @@ class ServerParameters:
         self.query = None
         self.risk_fp = risk_fp
         self.allow_alias = allow_alias
+        self.allow_echo = allow_echo
 
     def client_wrap(self, message):
         '''wrap message in encryption/signature layer for sending to client'''
@@ -106,6 +117,9 @@ class Query:
         self.eps = eps
         self.params = params
         self.alias = alias
+    def __str__(self):
+        return str((self.type, self.alias, self.eps, self.params))
+    
 
 ### Protocols
 
@@ -242,7 +256,8 @@ def handle_init(server, message):
     q = parse_query(clear)
 
 
-    if q == None or q.type > QTYPE_MAX:
+    if (q == None or q.type > QTYPE_MAX or
+        (q.type == QTYPE_ECHO and not server.parameters.allow_echo)):
         print 'malformed query. Disconnecting.'
         info('Malformed query from ' + username + '(' + fp + ')')
         server.sendString(swrap(fp, str((STATUS_ERROR_QUERY, q.type, 'Malformed query, bye.'))))
@@ -259,6 +274,12 @@ def handle_init(server, message):
     if server.parameters.allow_alias and q.alias != None:
         user_id = q.alias
 
+    if q.type == QTYPE_ECHO:
+        print 'Echo...'
+        #pprint(server.parameters.frontend['meta'])
+        info('Sending echo to ' + username + '(' + fp + ')')
+        server.sendString(swrap(fp, str((STATUS_OK, q.type, q))))
+        return
 
 
     if q.type == QTYPE_META:
@@ -381,9 +402,12 @@ if __name__ == "__main__":
     parser.add_argument('-v', "--version", action='store_true',
                         help = 'display version number and exit.')
     parser.add_argument("--allow_alias", action='store_true',
-                        help = 'Allow connecting clients to query on behalf of another users.' 
+                        help = 'Allow connecting clients to query on behalf of another user. ' 
                         'This should only be allowed if the client is trusted, e.g., implements external'
-                        'identification and authentication.')
+                        ' identification and authentication.')
+    parser.add_argument("--allow_echo", action='store_true',
+                        help = 'Allow echo requests.' 
+                        ' Useful for debugging clients.')
 
 
     args = parser.parse_args()
@@ -427,8 +451,10 @@ if __name__ == "__main__":
 
         frontend = init_frontend(args.database_url, processors)
 
-        parameters = ServerParameters(mykey, gpg, handle_init, handle_return, ra_address, ra_fp, frontend,
-                                      allow_alias = args.allow_alias)
+        parameters = ServerParameters(mykey, gpg, handle_init, handle_return,
+                                      ra_address, ra_fp, frontend,
+                                      allow_alias = args.allow_alias,
+                                      allow_echo = args.allow_echo)
         # hack, clean up at some point...
         parameters.querymodule = args.querymodule
         parameters.database = args.database_url
