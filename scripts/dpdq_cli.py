@@ -6,7 +6,7 @@
 # Description:  Encrypted echo client
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Thu Jun 20 18:47:27 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jun 23 15:25:36 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -36,7 +36,7 @@ from sys import stdout,stdin
 import re
 import gnupg
 from ast import literal_eval
-from dpdq.cli import Cli
+from dpdq.cl.cli import Cli
 from texttable import Texttable
 
 # copied from dpdq_qserver.py

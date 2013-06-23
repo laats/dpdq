@@ -14,7 +14,7 @@
 #                  response: proccess(proc(query))(backend(info(query)))
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 16:28:56 2013
-# Modified:     Wed Jun 12 23:08:54 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jun 23 14:31:31 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -39,11 +39,15 @@
 
 from backend import init_backend, query_backend
 
-def init_frontend(database, processors):
+def init_frontend(database, processors, reinit=False):
     if len(processors) == 0:
         raise Exception('Failed to initialize frontend: no processors given.')
     try: 
-        backend = init_backend(database)
+        if reinit:
+            backend = reinit_backend(backend)
+        else:
+            backend = init_backend(database)            
+
     except Exception as e:
         raise Exception('Could not initialize backend: ' + str(e))
 

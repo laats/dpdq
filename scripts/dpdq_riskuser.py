@@ -7,7 +7,7 @@
 #               gpg key.
 # Author:       Staal Vinterbo
 # Created:      Thu Apr 11 19:53:50 2013
-# Modified:     Thu Jun 13 16:37:05 2013 (Staal Vinterbo) staal@dink
+# Modified:     Sun Jun 23 15:34:14 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -35,7 +35,7 @@ import sqlalchemy as sa
 from sqlalchemy import Table, Column, Integer, String, Float, DateTime, MetaData, ForeignKey
 
 from dpdq.gpgutils import finduserinfo, findfp
-from dpdq.backend import make_risk_tables
+from dpdq.qp.backend import make_risk_tables
 
 
 if __name__ == "__main__":    

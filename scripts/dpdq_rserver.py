@@ -24,7 +24,7 @@
 #                 
 # Author:       Staal Vinterbo
 # Created:      Thu Apr 11 16:26:37 2013
-# Modified:     Wed Jun 12 23:42:55 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jun 23 16:46:14 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -57,9 +57,9 @@ from sqlalchemy import Table, Column, Integer, String, Float, DateTime, MetaData
 from logging import info, error, warning
 from ast import literal_eval
 
-from dpdq.server import Server, ServerFactory
-from dpdq.backend import init_risk_backend
-from dpdq.policy import policies
+from dpdq.ra.server import Server, ServerFactory
+from dpdq.qp.backend import init_risk_backend
+from dpdq.ra.policy import policies
 
 class RiskServer(Server):
     def __init__(self, conn, keyfp, gpg, handler, queryserverfps, database, policy):
@@ -222,7 +222,8 @@ if __name__ == "__main__":
         print Version
         sys.exit(0)
 
-    logging.basicConfig(filename=args.logfile,level=logging.DEBUG, format='%(asctime)s:%(name)s:%(levelname)s:%(message)s')
+    logging.basicConfig(filename=args.logfile,level=logging.INFO,
+                        format='%(asctime)s:%(name)s:%(levelname)s:%(message)s')
 
     gpg = gnupg.GPG(gnupghome=args.gpghome)
     mykey = findfp(args.key, gpg, True)

@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 21:41:31 2013
-# Modified:     Thu Jun 20 18:46:05 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jun 23 15:38:14 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -50,7 +50,7 @@ setup(name=pname,
       classifiers = filter(None, classifiers.split("\n")),
       long_description = "\n".join(doclines[2:]),
       package_dir = {pname:'./src'},
-      packages = [pname],
+      packages = [pname] + map(lambda x : pname + '.' + x, ['qp', 'cl', 'ra']),
       scripts = glob('./scripts/dpdq*.py'),
       install_requires = ['python-gnupg >= 0.3.3',
                           'sqlalchemy >= 0.8.0',

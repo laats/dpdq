@@ -6,7 +6,7 @@
 # Description:  Utils for using gnugp
 # Author:       Staal Vinterbo
 # Created:      Thu Apr 11 21:56:02 2013
-# Modified:     Thu Jun 13 17:18:12 2013 (Staal Vinterbo) staal@dink
+# Modified:     Sun Jun 23 16:05:02 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -86,7 +86,7 @@ def unwrap(gpg, cipher):
 
 def wrap(gpg, fromfp, tofp, clear):
     '''encrypt and sign'''
-    return gpg.encrypt(clear, tofp, sign=fromfp)
+    return str(gpg.encrypt(clear, tofp, sign=fromfp))
 
     
     

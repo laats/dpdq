@@ -8,7 +8,7 @@
 #               - interpret and execute queries
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 10:11:37 2013
-# Modified:     Wed Jun 19 15:29:33 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jun 23 14:34:42 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -32,7 +32,7 @@
 ################################################################################
 
 __all__ = ['operators', 'CATEGORICAL', 'INTEGER', 'FLOAT', 'STRING', 'DATE',
-           'init_backend', 'query_backend']
+           'init_backend', 'query_backend', 'reinit_backend']
 
 import sqlalchemy as sa
 from sqlalchemy import Table, Column, Integer, String, Float, DateTime, MetaData, ForeignKey
@@ -213,6 +213,15 @@ def init_backend(database):
     (meta, sets) = get_meta(conn)
     data_meta = get_backend_metadata(conn)
     return {'schema' : meta, 'meta' : data_meta, 'engine': engine, 'connection' : conn}
+
+def reinit_backend(backend):
+    conn = backend['connection']
+    (meta, sets) = get_meta(conn)
+    data_meta = get_backend_metadata(conn)
+    backend['schema'] = meta
+    backend['data_meta'] = data_meta
+    return backend
+
 
 def query_backend(backend, query):
     '''query the backend for the data'''
