@@ -6,7 +6,7 @@
 # Description:  Encrypted echo client
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Mon Jun 24 10:34:26 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 12:15:20 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -77,16 +77,17 @@ Type 'help' at the command prompt to see available commands.
 
 outp = '''
 from random import uniform
+from ast import literal_eval
 def trans(s):
     if type(s) == str:
         if s[0] == '[' and s[-1] == ')':
-            x = eval('slice(' + s[1:]) 
-            return uniform(x.start, x.stop)
+            a,b = literal_eval('(' + s[1:])
+            return uniform(a, b)
     return s
     
 def tlist(res):
-    l = [res['setup']['columns']]
-    for tup,mult in res['response'].items():
+    l = [res['response']['col_names']]
+    for tup,mult in res['response']['histogram'].items():
         for i in range(mult):
             l.append(map(trans, tup))
     return l

@@ -6,7 +6,7 @@
 # Description:  Encrypted query server, by default echo. Handles multiple clients
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 16:05:34 2013
-# Modified:     Sun Jun 23 15:46:09 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 12:05:27 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -44,6 +44,9 @@ if __name__ == "__main__":
     import os
     import gnupg
     from twisted.internet import reactor
+
+    from dpdq.qp.qprotos import load_mod
+    from logging import info
 
 
     parser = ap.ArgumentParser(description=('Query processing server (version: ' + Version + ').' +

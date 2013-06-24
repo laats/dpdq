@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 17:17:49 2013
-# Modified:     Mon Jun 24 10:04:12 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 12:03:53 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -42,7 +42,6 @@ from sqlalchemy import Float, DateTime, MetaData, ForeignKey
 from logging import info, error, warning
 from ast import literal_eval
 
-from server import Server, ServerFactory
 from ..qp.backend import init_risk_backend
 from policy import policies
 
