@@ -6,7 +6,7 @@
 # Description:  Implement Risk accountant policy
 # Author:       Staal Vinterbo
 # Created:      Mon May 13 21:45:22 2013
-# Modified:     Wed Jun 12 23:12:17 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 08:44:32 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -29,7 +29,7 @@
 #
 ################################################################################
 
-__all__ = ['policies']
+__all__ = ['policies', 'policy']
 
 # function that implements the policy
 def threshold_policy(eps, tt, qt, total_sum, history):
@@ -54,3 +54,6 @@ threshold_policy = {
 
 # dict containing all policies keyed by name
 policies = { 'threshold' : threshold_policy }
+
+# current policy
+policy = 'threshold'

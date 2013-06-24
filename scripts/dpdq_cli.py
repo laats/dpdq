@@ -6,7 +6,7 @@
 # Description:  Encrypted echo client
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Sun Jun 23 15:25:36 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 10:34:26 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -131,6 +131,10 @@ class TextClient(NetstringReceiver):
             self.transport.loseConnection()
             return
 
+        if status == STATUS_ERROR_BUDGET:
+            sys.stdout.write('Budget exceeded.\n')
+
+
         if qtype == QTYPE_META:
             if status != STATUS_OK:
                 sys.stderr.write('Could not get metadata: ' + str((status,response)) + '\n')
@@ -173,7 +177,7 @@ class TextClient(NetstringReceiver):
             else:
                 stdout.write(str(response) + '\n')
                 
-            if self.allow_write and self.cli.outfile != None and self.cli.outfile != '':
+            if status == STATUS_OK and self.allow_write and self.cli.outfile != None and self.cli.outfile != '':
                 try:
                     if self.cli.outfile == '-':
                         f = sys.stdout

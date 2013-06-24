@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 12:41:01 2013
-# Modified:     Sun Jun 23 16:44:11 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 10:16:38 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -68,11 +68,11 @@ class ServerState:
         self.frontend = frontend
         self.allow_alias = allow_alias
         self.allow_echo = allow_echo
-        self.loadf = lambda : self.frontend
+        self.loadf = lambda _ : None
 
         
     def reload_frontend(self):
-        self.frontend = self.loadf()
+        self.loadf(self)
 
 
 ### Protocols
@@ -239,7 +239,7 @@ class ClientHandler:
             res = handle_query(self.proto.state.frontend,
                                self.request.eps, self.request.params)
         except Exception as e:
-            self.proto.sendMessage(QPBadRequest(self.request))
+            self.proto.sendMessage(QPBadRequest(str(self.request)))
         else:
             info('Served: ' + str((self.user_id, str(self.request))))
             self.proto.sendMessage(QPOK(res, self.request.type))
@@ -302,7 +302,7 @@ def init_factory(gpg, # initialized gpg
             allow_echo  = allow_echo)
         
         state.querymodule = querymodule
-        state.loadf = lambda : reload_frontend(state)
+        state.loadf = reload_frontend
 
         factory = ServerFactory(state)
         

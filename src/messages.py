@@ -6,7 +6,7 @@
 # Description:  Message formats
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 10:09:00 2013
-# Modified:     Sun Jun 23 16:18:03 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jun 23 17:29:14 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -154,3 +154,15 @@ def QPBudgetError(text, towhat = None):
 
 def QPOK(text, towhat = None):
     return QPResponse(QP_OK, towhat, text)
+
+def RABadQuery(text):
+    return RAResponse(RA_ERROR_QUERY, text)
+
+def RABadUser(text):
+    return RAResponse(RA_ERROR_USER, text)    
+
+def RAInternalError(text):
+    return RAResponse(RA_ERROR_INTERNAL, text)
+
+def RAOK(f1, tt=None, qt=None):
+    return RAResponse(RA_OK, f1, tt, qt)

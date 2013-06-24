@@ -18,7 +18,7 @@
 #                         'name', 'explanation', 'parameters'
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 18:51:43 2013
-# Modified:     Wed Jun 12 23:22:16 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jun 24 10:22:07 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -56,7 +56,7 @@ def simple_count(eps, parms, result):
     count = 0
     for r in result['data']:
         count += 1
-    out = int(round(rlaplace(2/eps, count)))
+    out = int(round(rlaplace(2.0/eps, count)))
     return {'count' : out }
 
 simple_count_meta = {'name' : 'simple_count',

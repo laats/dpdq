@@ -1140,14 +1140,14 @@ The first element in the answer, ``status``, is a status code:
 
 .. code:: python
 
-    STATUS_OK             = 0 # everything is fine
-    STATUS_ERROR_BUDGET   = 1 # budget exceeded
-    STATUS_ERROR_RA       = 2 # user not found in risk database
-    STATUS_ERROR_QUERY    = 3 # malformed query
-    STATUS_ERROR_INTERNAL = 4 # internal error (this is bad)
+    QP_OK             = 0 # everything is fine
+    QP_ERROR_BUDGET   = 1 # budget exceeded
+    QP_ERROR_RA       = 2 # user not found in risk database
+    QP_ERROR_QUERY    = 3 # malformed query
+    QP_ERROR_INTERNAL = 4 # internal error (this is bad)
 
 The second element in the answer is the request ``type`` that this is an
-answer to. If the status code is ``STATUS_OK``, the third element
+answer to. If the status code is ``QP_OK``, the third element
 ``response`` is a dictionary, otherwise it is a string explaining what
 went wrong. For a risk usage request, the returned ``response``
 dictionary format is:
@@ -1285,14 +1285,13 @@ Format specification:
 All ``name`` elements must correspond to the ``name`` elements in the
 `metdata <#metadata>`__.
 
-Anyone -- Risk accounting server
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Query Processor -- Risk accounting server
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The risk accounting server accepts two types of queries, one to check if
 a query for a given user ``user`` with a certain risk amount
 (``epsilon``) can be answered, and one to query a users risk
-information. A query server is allowed to ask both queries, while a
-client can only ask on behalf of its user.
+information.
 
 The ``check`` query can be formulated as
 
@@ -1309,8 +1308,6 @@ The user information requested by the ``info`` query is
 -  the user's current total risk expenditure
 -  the user's per query risk threshold
 -  the user's total risk allowed
-
-A user is identified by the public key fingerprint ``user``.
 
 The specification of the query format is:
 
