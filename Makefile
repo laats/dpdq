@@ -5,7 +5,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 22:20:31 2013
-# Modified:     Thu Jun 20 18:03:30 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 10:17:36 2013 (Staal Vinterbo) staal@mats
 # Language:     BSDmakefile
 # Package:      N/A
 # Status:       Experimental
@@ -32,23 +32,20 @@ pname = dpdq
 
 SRCDIR = ./src
 SCRIPTDIR = ./scripts
-BINSTALLDIR = /usr/local/bin
 DOCDIR = ./doc
-DOCSRC = $(DOCDIR)/docstring.mdwn $(DOCDIR)/*.png
 
-PSRC = $(SRCDIR)/*.py $(SCRIPTDIR)/*.py setup.py
+
+PSRC = $(SRCDIR)/*.py $(SRCDIR)/ra/*.py $(SRCDIR)/cl/*.py \
+	$(SRCDIR)/qp/*.py $(SCRIPTDIR)/*.py setup.py
 
 PINSTALL = pip install
 
 options:
-	@echo 'targets are: builds sdist egg dist love install'
+	@echo 'targets are: builds sdist egg dist doc love install'
 	@echo 'to build and install do: make builds; sudo make install'
 	@echo 'to see what each target does, do: make -n target'
 
 builds: egg sdist demo.tgz
-
-clean: 
-	rm -f *.pyc *.aux *.log 
 
 MANIFEST.in: MANIFEST.template Makefile
 	cat MANIFEST.template > MANIFEST.in
@@ -71,6 +68,11 @@ sdist: $(PSRC) readme.txt MANIFEST.in
 
 egg: $(PSRC) 
 	python setup.py bdist_egg
+
+doc: $(pname).pdf
+
+$(pname).pdf : $(DOCDIR)/docstring.mdwn
+	pandoc -s -S --toc -V geometry:margin=1in -o $@ $<
 
 install.source: sdist
 	$(PINSTALL) `ls -t dist/dpdq-*.tar.gz | head -1`

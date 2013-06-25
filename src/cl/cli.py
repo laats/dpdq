@@ -6,7 +6,7 @@
 # Description:  Command line query constructor
 # Author:       Staal Vinterbo
 # Created:      Thu May  9 16:03:40 2013
-# Modified:     Tue Jun 18 10:14:17 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 14:42:28 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -29,14 +29,13 @@
 #
 ################################################################################
 
-
+import sys
 from shlex import shlex
 from cmd import Cmd
 import pparser
 import readline
 
 from pprint import pprint
-
 from textwrap import wrap
 
 def filtero(text, options):
@@ -59,6 +58,7 @@ class Cli(Cmd):
         self.expr = 'not set'
         self.prompt = '> '
         self.qtype = None
+        self.print_ = lambda x : sys.stdout.write(x + '\n')
 
 
     def preloop(self):
@@ -78,15 +78,19 @@ class Cli(Cmd):
 
     def do_run(self, line):
         '''run [OUTFILE] -- send query to query server. If OUTFILE is given, the computed result is copied to the file.'''
-        n = ['predicate', 'columns', 'type']
+        n = [ #'predicate', 'columns',
+            'dataset',
+            'query type']
 
         unset = map(lambda (y,_) : y,
                     filter(lambda (_,x) : x == [] or x == None,
-                           zip(n, [ #self.select,
+                           zip(n,
+                               [ #self.select,
                                     #self.project,
+                                   self.data,
                                    self.type])))
         if len(unset) > 0:
-            print 'Cannot run without setting: ' + ' '.join(unset)
+            self.print_('Cannot run without setting: ' + ', '.join(unset))
             return False
         self.qtype = 'info'
         self.outfile = line.strip()
@@ -100,10 +104,10 @@ class Cli(Cmd):
     def do_columns(self, line):
         '''columns COLUMN [COLUMN]*   -- set columns (data attributes) you are interested in. If left unset, all columns are chosen.'''
         if self.data == None:
-            print 'Sorry, need to set data first.'
+            self.print_('Sorry, need to set data first.')
         else:
             if line.strip() == '':
-                print 'set columns to all'
+                self.print_('set columns to all')
                 self.project = []
                 return False
             cand = line.strip().split()
@@ -111,26 +115,26 @@ class Cli(Cmd):
             cool = [x for x in cand if x in allowed]
             not_cool = set(cand) - set(cool)
             if len(cool) == 0:
-                print 'Sorry, no columns recognized.'
+                self.print_('Sorry, no columns recognized.')
                 return False
             self.project = cool
             if len(not_cool) > 0:
-                print 'Not all columns were recognized.\nSkipped: ' + ' '.join(not_cool)
-            print 'set columns to: ' + ' '.join(self.project)
+                self.print_('Not all columns were recognized.\nSkipped: ' + ' '.join(not_cool))
+            self.print_('set columns to: ' + ' '.join(self.project))
         return False
 
     def complete_columns(self, text, line, begidx, endidx):
         if self.data == None:
-            print '\nSorry, need to set data first. Press [return] to return to prompt.'
+            self.print_('\nSorry, need to set data first. Press [return] to return to prompt.')
             return False
         return filtero(text, self.meta['datasets'][self.data]['attributes'].keys())
 
     def do_type(self, line):
         '''type TYPE  -- sets query type.'''
         if line not in self.meta['processors'].keys():
-            print 'Sorry,', line, 'is not available'
+            self.print_('Sorry, ' + str(line) + ' is not available')
         else:
-            print 'Selecting type: ', line
+            self.print_('Selecting type: ' + str(line))
             self.type = line
             pad = self.meta['processors'][line]['parameters']
             self.params = dict((x, pad[x]['default']) for x in pad.keys())
@@ -142,38 +146,38 @@ class Cli(Cmd):
     def do_value(self, line):
         '''value PARAMETER VALUE  -- set parameter for query type.'''
         if self.type == None:
-            print 'Please select a query type first.'
+            self.print_('Please select a query type first.')
             return False
 
         words = line.strip().split()
         if len(words) != 2:
-            print 'Sorry, need exactly one parameter and one value.'
+            self.print_('Sorry, need exactly one parameter and one value.')
             return False
 
         parm, val = words
         
         if parm not in self.params.keys():
-            print 'Sorry, it seems', line, 'is not a parameter for the set type.'
+            self.print_('Sorry, it seems ' + parm + ' is not a parameter for the query type.')
             return False
         pad = self.meta['processors'][self.type]['parameters'][parm]
         ptype = pad['type']
         if ptype == 0 and val not in pad['values'].keys():
-            print 'Sorry,', val, 'is not a recogized value for this parameter.'
+            self.print_('Sorry, ' + str(val) + ' is not a recogized value for this parameter.')
         if ptype == 1:
             try:
                 val = int(val)
             except:
-                print 'Sorry, the value must be an integer.'
+                self.print_('Sorry, the value must be an integer.')
                 return False
         if ptype == 2:
             try:
                 val = float(val)
             except:
-                print 'Sorry, the value must be a float.'
+                self.print_('Sorry, the value must be a float.')
                 return False
         if ptype in [1,2]:
             if val < pad['bounds']['lower'] or val > pad['bounds']['upper']:
-                print 'Sorry, the value is out of bounds.'
+                self.print_('Sorry, the value is out of bounds.')
                 return False
         self.params[parm] = val
         return False
@@ -199,7 +203,7 @@ class Cli(Cmd):
         if line not in self.meta['datasets'].keys():
             print 'Sorry,', line, 'is not available'
         else:
-            print 'Selecting data set: ', line
+            self.print_('Selecting data set: ' + line)
             self.data = line
             self.select = []
             self.project = []
@@ -211,7 +215,7 @@ class Cli(Cmd):
     def do_predicate(self, line):
         '''predicate PREDICATE  -- input selection predicate (example: gender == male and age > 30). If left unset, all rows are selected.'''
         if self.data == None:
-            print 'Cannot evaluation predicate without knowing the data set. Please choose a data set first.'
+            self.print_('Cannot evaluate predicate without knowing the data set.\nPlease choose a data set first.')
         else:
             if line.strip() == '':
                 self.select = []
@@ -224,7 +228,7 @@ class Cli(Cmd):
                 tks = list(lex)
             except ValueError as err:
                 fle = lex.token.splitlines()[0]
-                print 'ERROR:', lex.error_leader(), str(err), 'following "' + fle + '"'
+                self.print_('ERROR: ' + ' '.join([lex.error_leader(), str(err), ('following "' + fle + '"')]))
             else:
                 parser = pparser.pparser(self.meta['datasets'][self.data],
                                          self.meta['operators'])
@@ -233,13 +237,13 @@ class Cli(Cmd):
                     self.select = parser.p
                     self.expr = line
                 else:
-                    print 'ERROR: ', parser.report, 'expected', parser.expected
-                    print 'keeping previous predicate.'
+                    self.print_(' '.join(['ERROR:', parser.report, 'expected', parser.expected]))
+                    self.print_('keeping previous predicate.')
         return False
 
     def complete_predicate(self, text, line, begidx, endidx):
         if self.data == None:
-            print '\nPlease choose a data set first. Hit [return] to return to prompt.'
+            self.print_('\nPlease choose a data set first. Hit [return] to return to prompt.')
             return []
         try: 
             lex = shlex(line)
@@ -263,26 +267,26 @@ class Cli(Cmd):
     def do_epsilon(self, line):
         '''epsilon NUMBER  -- set differential privacy risk level.'''
         num = pparser.tonum(line)
-        if num == None:
-            print 'Sorry, ' + line + ' is not a number'
+        if num == None or num <= 0:
+            self.print_('Sorry, ' + line + ' is not a legal value.')
         else:
             self.eps = num
 
     def do_list(self, line):
         '''list datasets | types  -- list available datasets or query types.'''
         if line == '':
-            print 'what do you want me to list?'
+            self.print_('what do you want me to list?')
             return
         if line == 'datasets':
             for n,d in self.meta['datasets'].items():
                 s = n + (': ' + '\n'.join(wrap(d['description'], 50, subsequent_indent = '   ')) if d.has_key('description') else '')
-                print s
+                self.print_(s)
         elif line == 'types':
             for n,d in self.meta['processors'].items():
                 s = n + (': ' + '\n'.join(wrap(d['description'], 50, subsequent_indent = '    ')) if d.has_key('description') else '')
-                print s
+                self.print_(s)
         else:
-            print 'Sorry, list argument "', line, '" not recognized.'
+            self.print_('Sorry, list argument "' + line + '" not recognized.')
 
     def complete_list(self, text, line, begidx, endidx):
         return filtero(text, ['datasets', 'types'])
@@ -293,7 +297,7 @@ class Cli(Cmd):
 
         words = line.strip().split()
         if len(words) < 1:
-            print 'What do you want me to show?'
+            self.print_('What do you want me to show?')
             return False
 
         cmd = words[0]
@@ -313,7 +317,7 @@ class Cli(Cmd):
                      'type' : str(self.type),
                      'parms': str(self.params),
                      'eps'  : str(self.eps) }
-            print s
+            self.print_(s)
             return False
 
         elif cmd == 'dataset':
@@ -323,7 +327,7 @@ class Cli(Cmd):
             try:
                 dd = self.meta['datasets'][arg]
             except:
-                print 'Sorry,', arg, 'not available. Did you misspell the name?'
+                self.print_('Sorry, ' + str(arg) + 'not available. Did you misspell the name?')
                 return False
 
             ttype = {0 : 'categorical',
@@ -332,52 +336,52 @@ class Cli(Cmd):
                      3 : 'string',
                      4 : 'date'}
             
-            print '==========', arg, '============'
-            print '\n'.join(wrap(dd['description'], 70))
-            print '---------- columns --------------'                
+            self.print_('========== ' + str(arg) + ' ============')
+            self.print_('\n'.join(wrap(dd['description'], 70)))
+            self.print_('---------- columns --------------')
             attd = dd['attributes']
             for a,ad in attd.items():
-                print a, ':', ttype[ad['type']]
-                print '    description:', '\n'.join(wrap(ad['description'], 50, subsequent_indent = '    '))
+                self.print_( str(a) + ': ' + str(ttype[ad['type']]))
+                self.print_('    description: ' + '\n'.join(wrap(ad['description'], 50, subsequent_indent = '    ')))
                 if ad['type'] == 0:
                     adv = ad['values']
-                    print '    values:'
+                    self.print_('    values:')
                     for v in adv.keys():
-                        print '      ', v, ':', '\n'.join(wrap(adv[v], 60, subsequent_indent = '          '))
+                        self.print_('       ' + str(v) + ': ' + '\n'.join(wrap(adv[v], 60, subsequent_indent = '          ')))
                 elif ad['type'] in [1,2]:
-                    print '    bounds: ', ad['bounds']
+                    self.print_('    bounds: ' + str(ad['bounds']))
             return False
 
         elif cmd == 'type':
             if arg == '':
-                print 'which query type?'
+                self.print_('which query type?')
                 return False
             try:
                 pd = self.meta['processors'][arg]
             except:
-                print 'Sorry,', arg, 'not available. Did you misspell the name?'
+                self.print_('Sorry, ' + str(arg) + ' not available. Did you misspell the name?')
                 return False
-            print '==========', arg, '============'
-            print '\n'.join(wrap(pd['description'], 70))
-            print '---------- parameters --------------'                
+            self.print_('========== ' + str(arg) + ' ============')
+            self.print_('\n'.join(wrap(pd['description'], 70)))
+            self.print_('---------- parameters --------------')         
             
             for p, v in pd['parameters'].items():
-                print '-----------',p, '------------'
-                print 'Description:', '\n'.join(wrap(v['description'], 60, subsequent_indent = '   '))
-                print 'Default value:', v['default']
+                self.print_('----------- ' + str(p) + ' ------------')
+                self.print_('Description: ' + '\n'.join(wrap(v['description'], 60, subsequent_indent = '   ')))
+                self.print_('Default value: ' + str(v['default']))
                 if v.has_key('bounds'):
-                    print 'Bounds:', ', '.join(map(lambda (x,y): x + ': ' + str(y), v['bounds'].items()))
+                    self.print_('Bounds: ' + ', '.join(map(lambda (x,y): x + ': ' + str(y), v['bounds'].items())))
                 if v.has_key('values'):
-                    print 'Values:'
+                    self.print_('Values:')
                     for wk, we in v['values']:
-                        print wrap(' ' + wk +': ' + we, 60, subsequent_indent = '   ')
+                        self.print_(wrap(' ' + wk +': ' + we, 60, subsequent_indent = '   '))
                 print ''
 
         elif cmd == 'risk':
             self.qtype = 'risk'
             return True
         else:
-            print 'Unrecognized show parameter:', line
+            self.print_('Unrecognized show parameter: ' + line)
         
         return False
 

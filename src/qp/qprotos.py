@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 12:41:01 2013
-# Modified:     Mon Jun 24 10:16:38 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 15:10:34 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -34,7 +34,6 @@ __all__ = ['init_factory', 'Address', 'RiskClientFactory']
 from twisted.internet.protocol import Factory, ClientFactory
 from ..gpgproto import GPGProtocol
 from frontend import init_frontend
-from logging import error, warning, info
 import imp
 import os
 import signal
@@ -42,7 +41,7 @@ import signal
 from ..messages import *
 from frontend import handle_query
 from twisted.internet import reactor
-from logging import error, info, debug
+from logging import error, warning, info, debug
 
 
 class Address:
@@ -51,7 +50,7 @@ class Address:
         self.port = port
 
 class ServerState:
-    '''collection of server parameters'''
+    '''collection of server parameters, shared'''
     def __init__(self,
                  gpg,
                  me,
@@ -239,7 +238,7 @@ class ClientHandler:
             res = handle_query(self.proto.state.frontend,
                                self.request.eps, self.request.params)
         except Exception as e:
-            self.proto.sendMessage(QPBadRequest(str(self.request)))
+            self.proto.sendMessage(QPBadRequest(str(e)))
         else:
             info('Served: ' + str((self.user_id, str(self.request))))
             self.proto.sendMessage(QPOK(res, self.request.type))

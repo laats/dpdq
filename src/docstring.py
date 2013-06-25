@@ -16,6 +16,8 @@
     `here <http://ptg.ucsd.edu/~staal/dpdq/dist>`__.
 **Source Code**
     Git clone URL: ``git://ptg.ucsd.edu/dpdq.git``
+**Printer Friendly PDF version of this document:**
+    `here <dpdq.pdf>`__.
 
 Synopsis
 --------
@@ -36,7 +38,7 @@ Main scripts
                            [-v] [--allow_alias] [--allow_echo]
                            database_url
 
-    Query processing server (version: 0.20). This program allows clients to
+    Query processing server (version: 0.21). This program allows clients to
     request information about datasets in the database it is connected to. As
     these requests potentially carry privacy risk, a risk accountant is queried
     for adherence to the current risk policy before serving the information to the
@@ -85,12 +87,11 @@ Main scripts
 
 ::
 
-    usage: dpdq_rserver.py [-h] [-k KEY] [-P RISK_SERVER_PORT]
-                           [-s QUERY_SERVER_KEYS] [-e {threshold}] [-g GPGHOME]
-                           [-l LOGFILE] [-v]
+    usage: dpdq_rserver.py [-h] [-k KEY] [-P RISK_SERVER_PORT] [-e {threshold}]
+                           [-g GPGHOME] [-l LOGFILE] [-m MODULE] [-v]
                            database_url
 
-    Risk Accounting Server (version: 0.20). This program answers requests about
+    Risk Accounting Server (version: 0.21). This program answers requests about
     users' privacy risk history and whether a user is allowed to incur further
     risk according to the current risk policy.
 
@@ -106,9 +107,6 @@ Main scripts
       -P RISK_SERVER_PORT, --risk_server_port RISK_SERVER_PORT
                             the ip address port the risk accountant listens for
                             requests on (default: 8124).
-      -s QUERY_SERVER_KEYS, --query_server_keys QUERY_SERVER_KEYS
-                            comma separated key identities for query server users
-                            (default: "QueryServer").
       -e {threshold}, --enforce_policy {threshold}
                             risk management policy to enforce (default:
                             "threshold").
@@ -118,6 +116,9 @@ Main scripts
       -l LOGFILE, --logfile LOGFILE
                             the file information about transactions and the state
                             of the accountant is written to (default: "risk.log").
+      -m MODULE, --module MODULE
+                            a python module that contains additional policies
+                            (default: "None").
       -v, --version         display version number and exit.
 
 **$ dpdq\_cli.py -h**
@@ -128,7 +129,7 @@ Main scripts
                        [-a QUERY_SERVER_ADDRESS] [-p QUERY_SERVER_PORT]
                        [-g GPGHOME] [-u USER] [-U URL] [-f] [-v] [-n] [-d]
 
-    Text based query client (version: 0.20). This program allows requesting
+    Text based query client (version: 0.21). This program allows requesting
     information from and about datasets from a query processing server.
 
     optional arguments:
@@ -244,6 +245,39 @@ the ability to incorporate new datasets, methods for query processing,
 and implementations of risk accounting policies with minimal effort and
 disruption of service.
 
+Capabilities
+~~~~~~~~~~~~
+
+The system comes with three different query types preinstalled. Among
+these is the histogram query type. A histogram can be thought of as a
+"compression" of data, by construction of equivalence classes in the
+data, and only keeping a representative for each class together with a
+count of the number of class members. Creating equivalence classes can
+be done by projecting the data onto a subset of attributes/dimensions,
+as well as partitioning attribute values by, for example, discretizing.
+
+Given a histogram, one can "reconstitute" data by \* expanding
+equivalence class representatives into a number of rows proportional
+with the size of the class \* reversing any attribute value partitioning
+by randomly substituting by randomly substituting a value in the
+partition class (e.g., a discretization range). This reconstituted data
+can then be visualized and analyzed using standard tools freely without
+any further privacy risk.
+
+.. figure:: doc/MIPlot.png
+   :alt: Post histogram query analysis of myocardial infarction (MI)
+   data
+
+   Post histogram query analysis of myocardial infarction (MI) data
+It is easy to add new query types, as well as risk accounting policies,
+as run-time loadable modules. For example, the complete code needed for
+a loadable risk policy that implements the current default policy is
+given as an example
+`below <http://ptg.ucsd.edu/~staal/dpdq/dpdq.html#risk-accounting-policies>`__.
+A more sophisticated example, can be seen in the complete module that
+implements a new query type that implements `differentially private
+logistic regression <aux/query_dplr.py>`__.
+
 System Overview
 ~~~~~~~~~~~~~~~
 
@@ -286,9 +320,6 @@ a. determines if the requested risk is allowed under the current risk
 b. notifies the processing server whether the client can be given the
    query response subject to the current accounting policy, and if the
    risk is allowed the user is credited with it.
-c. alternatively, the risk accountant can be queried by the client
-   directly to obtain the user's current risk total, and the thresholds
-   set for the user.
 
 All communication is encrypted. Identification and authentification is
 done using public key fingerprints and cryptographic signatures,
@@ -298,67 +329,67 @@ shared.
 Features
 --------
 
-**Secure**
+-  **Secure**
 
-    -  "Certificate" (public key encryption) based identification and
-       authentication: no passwords to forget.
-    -  All communication is encrypted.
-    -  Allows choice of most suitable database management system.
+   -  "Certificate" (public key encryption) based identification and
+      authentication: no passwords to forget.
+   -  All communication is encrypted.
+   -  Allows choice of most suitable database management system.
 
-**Privacy Preserving**
+-  **Privacy Preserving**
 
-    -  Differentially private with accounting of risk expenditure over
-       time that supports scriptable risk accounting policies.
-    -  Allows guarantees of privacy that are separate from guarantees of
-       access control.
-    -  Allows guarantees of de-identification.
+   -  Differentially private with accounting of risk expenditure over
+      time that supports scriptable risk accounting policies.
+   -  Allows guarantees of privacy that are separate from guarantees of
+      access control.
+   -  Allows guarantees of de-identification.
 
-**Easily deployable**
+-  **Easily deployable**
 
-    -  Simple setup that requires only python and GPG.
-    -  Supports many database backends "out of the box", including
-       SQLite, MySQL, Postgresql, Oracle, SQL Server, and Firebird.
-    -  Designed to support self-configuring clients: clients configure
-       the user interface dynamically to reflect the currently relevant
-       dataset and available query types.
-    -  No redeployment or software update required when adding
+   -  Simple setup that requires only python and GPG.
+   -  Supports many database backends "out of the box", including
+      SQLite, MySQL, Postgresql, Oracle, SQL Server, and Firebird.
+   -  Designed to support self-configuring clients: clients configure
+      the user interface dynamically to reflect the currently relevant
+      dataset and available query types.
+   -  No redeployment or software update required when adding
 
-       -  risk accounting policies,
-       -  query types, and
-       -  datasets.
+      -  risk accounting policies,
+      -  query types, and
+      -  datasets.
 
-    -  Runs on any platform python and GPG can run on (includes Windows,
-       Linux, MacOS X, CentOS, BSD Unix, System V Unix).
-    -  Oriented towards data sets and is only dependent on dataset
-       metadata being available, but otherwise agnostic to underlying
-       database schema. This allows control and flexible definitions of
-       data sets.
+   -  Runs on any platform python and GPG can run on (includes Windows,
+      Linux, MacOS X, CentOS, BSD Unix, System V Unix).
+   -  Oriented towards data sets and is only dependent on dataset
+      metadata being available, but otherwise agnostic to underlying
+      database schema. This allows control and flexible definitions of
+      data sets.
 
-**Flexible**
+-  **Flexible**
 
-    -  Supports hot-pluggable query types and data sets.
-    -  Supports hot-pluggable risk accounting policies.
-    -  Minimal deployment does not require any additional database
-       software as SQLite is distributed with python.
+   -  Supports hot-pluggable query types and data sets.
+   -  Supports hot-pluggable risk accounting policies.
+   -  Minimal deployment does not require any additional database
+      software as SQLite is distributed with python.
 
-**Scalable**
+-  **Scalable**
 
-    -  Supports distribution of workload:
+   -  Supports distribution of workload:
 
-       -  datasets can be distributed among different databases,
-       -  multiple servers can use the same database, and
-       -  multiple query processing servers can share the same risk
-          accounting server.
+      -  datasets can be distributed among different databases,
+      -  multiple servers can use the same database, and
+      -  multiple query processing servers can share the same risk
+         accounting server.
 
-    -  Centralized management is possible through the use of distributed
-       file systems and networked databases.
-    -  Adaptation to any user management and access control system is
-       possible by implementing client access control, e.g., by
-       implementing the client in a web-server that implements the user
-       management system.
+   -  Centralized management is possible through the use of distributed
+      file systems and networked databases.
+   -  Adaptation to any user management and access control system is
+      possible by implementing client access control, e.g., by
+      implementing the client in a web-server that implements the user
+      management system.
 
-**Open source**
-    Allows community involvement as well as site-specific customization
+-  **Open source** Allows community involvement as well as site-specific
+   customization
 
 Using *DPDQ*
 ------------
@@ -382,6 +413,7 @@ on the availability of
    -  twisted version 12.0.0 or higher
    -  python-gnupg version 0.3.3 or higher
    -  sqlalchemy version 0.8.0 or higher
+   -  texttable version 0.8.1 or higher
 
 The `SQLite <http://www.sqlite.org>`__ SQL database engine is
 distributed with python, and can be used for the databases containing

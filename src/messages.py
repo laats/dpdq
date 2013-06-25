@@ -6,7 +6,7 @@
 # Description:  Message formats
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 10:09:00 2013
-# Modified:     Sun Jun 23 17:29:14 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 12:59:49 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -65,7 +65,7 @@ RA_DENIED = 0
 
 
 class QPRequest:
-    def __init__(self, rtype, alias, eps, params):
+    def __init__(self, rtype, alias = None, eps = 0, params = None):
         self.type = rtype
         self.eps = eps
         self.params = params
@@ -86,12 +86,12 @@ class QPRequest:
 
 
 class QPResponse:
-    def __init__(self, status, towhat, text):
+    def __init__(self, status, towhat, response):
         self.status = status
         self.towhat = towhat
-        self.text = text
+        self.response = response
     def __str__(self):
-        return str((self.status, self.towhat, self.text))
+        return str((self.status, self.towhat, self.response))
     @classmethod
     def parse(self, text):
         '''parse response in a safe way'''
