@@ -29,7 +29,7 @@ $ dpdq_qserver.py -h
                            [-v] [--allow_alias] [--allow_echo]
                            database_url
 
-    Query processing server (version: 0.21). This program allows clients to
+    Query processing server (version: 0.23). This program allows clients to
     request information about datasets in the database it is connected to. As
     these requests potentially carry privacy risk, a risk accountant is queried
     for adherence to the current risk policy before serving the information to the
@@ -80,7 +80,7 @@ $ dpdq_rserver.py -h
                            [-g GPGHOME] [-l LOGFILE] [-m MODULE] [-v]
                            database_url
 
-    Risk Accounting Server (version: 0.21). This program answers requests about
+    Risk Accounting Server (version: 0.23). This program answers requests about
     users' privacy risk history and whether a user is allowed to incur further
     risk according to the current risk policy.
 
@@ -114,9 +114,9 @@ $ dpdq_cli.py -h
 
     usage: dpdq_cli.py [-h] [-k KEY] [-s QUERY_SERVER_KEY]
                        [-a QUERY_SERVER_ADDRESS] [-p QUERY_SERVER_PORT]
-                       [-g GPGHOME] [-u USER] [-U URL] [-f] [-v] [-n] [-d]
+                       [-g GPGHOME] [-u USER] [-f] [-v] [-n] [-d]
 
-    Text based query client (version: 0.21). This program allows requesting
+    Text based query client (version: 0.23). This program allows requesting
     information from and about datasets from a query processing server.
 
     optional arguments:
@@ -134,9 +134,6 @@ $ dpdq_cli.py -h
                             the directory in which to find key ring files
                             (default: ".").
       -u USER, --user USER  the user alias to act on behalf on (default: "None").
-      -U URL, --url URL     url with query section for passing parameters to the
-                            client. Used to pass information when providing access
-                            to this client in a web-service. (default: "None").
       -f, --filter          act like a filter: read commands from stdin and print
                             output to stdout. This is useful for batch execution
                             of commands.
