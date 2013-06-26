@@ -6,7 +6,7 @@
 # Description:  web server client protocol
 # Author:       Staal Vinterbo
 # Created:      Tue Jun 25 18:28:30 2013
-# Modified:     Tue Jun 25 21:34:46 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 22:06:01 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -105,8 +105,9 @@ class QPClientFactory(ReconnectingClientFactory):
 
     def clientConnectionLost(self, connector, reason):
         why = str(reason).split(':')[-1][:-1].strip()
-        self.resource.request.write(why + ', trying to reconnect.')
-        self.resource.request.finish()
+        if self.resource.request != None:
+            self.resource.request.write(why + ', trying to reconnect.')
+            self.resource.request.finish()
         ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
     def clientConnectionFailed(self, connector, reason):
