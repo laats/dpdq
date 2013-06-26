@@ -1,6 +1,6 @@
 % DPDQ: Differentially Private Data Queries
 % Staal A. Vinterbo
-% Time-stamp: <2013-06-24 17:42:41 staal>
+% Time-stamp: <2013-06-25 16:01:13 staal>
 
 <!-- # DPDQ: Differentially Private Data Queries -->
 
@@ -11,7 +11,7 @@
 **Availability**
   ~ GPL <http://www.gnu.org/copyleft/gpl.html>
 **Homepage**
-  ~ Homepage [here][homepage].
+  ~ Homepage: <http://ptg.ucsd.edu/~staal/dpdq>
 **Download**
   ~ Download installable Python package [here][download].
 **Source Code**

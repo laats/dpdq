@@ -10,7 +10,7 @@
 **Availability**
     GPL http://www.gnu.org/copyleft/gpl.html
 **Homepage**
-    Homepage `here <http://ptg.ucsd.edu/~staal/dpdq>`__.
+    Homepage: http://ptg.ucsd.edu/~staal/dpdq
 **Download**
     Download installable Python package
     `here <http://ptg.ucsd.edu/~staal/dpdq/dist>`__.

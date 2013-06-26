@@ -6,7 +6,7 @@
 # Description:  GPG encrypted netstring protocol
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 07:53:44 2013
-# Modified:     Sun Jun 23 16:32:14 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 20:46:09 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -51,6 +51,7 @@ class GPGProtocol(NetstringReceiver):
                   ignored. Otherwise Exception will be raised.
         '''
         self.gpg = gpg
+        self.silent = silent
 
         # find my own key
         self.me = me

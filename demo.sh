@@ -7,7 +7,7 @@
 #               /tmp/dpdq/[cqr]
 # Author:       Staal Vinterbo
 # Created:      Fri May 10 16:44:21 2013
-# Modified:     Thu Jun 20 15:37:13 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Jun 25 21:14:16 2013 (Staal Vinterbo) staal@mats
 # Language:     Shell-script
 # Package:      N/A
 # Status:       Experimental
@@ -30,11 +30,7 @@
 #
 ################################################################################
 
-
-
 set -e
-
-
 
 if [ ! -d /tmp/dpdq/c ]; then
     echo "setting up directories in /tmp..."
@@ -123,13 +119,13 @@ echo " Starting new ones..."
 if hash xterm 2> /dev/null; then
     xterm -T Risk_Accountant -e dpdq_rserver.py -g /tmp/dpdq/r sqlite:////tmp/dpdq/r/risk.db &
     echo $! > /tmp/dpdq/r/pid
-    xterm -T Query_Processor -e dpdq_qserver.py -g /tmp/dpdq/q sqlite:////tmp/dpdq/q/warehouse.db -q aux/query_dplr.py &
+    xterm -T Query_Processor -e dpdq_qserver.py --allow_alias -g /tmp/dpdq/q sqlite:////tmp/dpdq/q/warehouse.db -q aux/query_dplr.py &
     echo $! > /tmp/dpdq/q/pid
 else
     echo "starting servers in the background. You will need to kill them explicitly!"
     dpdq_rserver.py -g /tmp/dpdq/r sqlite:////tmp/dpdq/r/risk.db > /dev/null &
     echo $! > /tmp/dpdq/r/pid
-    dpdq_qserver.py -g /tmp/dpdq/q sqlite:////tmp/dpdq/q/warehouse.db > /dev/null &
+    dpdq_qserver.py --allow_alias -g /tmp/dpdq/q sqlite:////tmp/dpdq/q/warehouse.db > /dev/null &
     echo $! > /tmp/dpdq/q/pid
 fi
 echo "Server process id's (pid) are found in /tmp/dpdq/r/pid and /tmp/dpdq/q/pid."

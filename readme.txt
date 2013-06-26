@@ -5,7 +5,7 @@ Copyright
 Availability
     GPL http://www.gnu.org/copyleft/gpl.html
 Homepage
-    Homepage here.
+    Homepage: http://ptg.ucsd.edu/~staal/dpdq
 Download
     Download installable Python package here.
 Source Code
