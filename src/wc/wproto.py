@@ -3,10 +3,10 @@
 #
 # File:         wproto.py
 # RCS:          $Header: $
-# Description:  web server client protocol
+# Description:  twisted web server QP client protocol
 # Author:       Staal Vinterbo
 # Created:      Tue Jun 25 18:28:30 2013
-# Modified:     Tue Jun 25 22:06:01 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu Jun 27 18:36:47 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -29,7 +29,8 @@
 #
 ################################################################################
 
-from twisted.internet.protocol import ReconnectingClientFactory
+from twisted.internet.protocol import ClientFactory
+from twisted.internet import reactor
 from logging import error, warning, info, debug
 
 from dpdq.gpgproto import GPGProtocol
@@ -40,7 +41,7 @@ import sys
 #####
 
 class State:
-    '''shared information about the global state'''
+    '''information about the global state'''
     def __init__(self, gpg, me, qp):
 
         self.gpg = gpg # gpg instance
@@ -52,76 +53,65 @@ class State:
 
 class ClientProtocol(GPGProtocol):
 
-    def __init__(self, state, resource):
+    def __init__(self, state, qp_request, web_request, callback):
         GPGProtocol.__init__(self,
                              state.gpg,
                              state.me,
                              state.qp, # talk to qp 
                              [state.qp]) # only allow responses from this qp
         self.state = state
-        self.handler = Handler(self)
-        self.connected = False
-        self.request = None     # the request sent
-        self.callback = None   # the responder that through method
-                                # callback(message, request) takes care
-                                # of the second half of the web
-                                # resource rendering
-        self.resource = resource
-        self.resource.proto = self # pass the protocol to the resource
+        self.finished = False
+
+        # callback is called with (QPResponse, self.qp_request, self.web_request)
+        self.qp_request = qp_request      # the request to send
+        self.web_request = web_request    # the associated web request associated 
+        self.callback = callback # the responder that through method
+                                 # callback(message, request) takes care
+                                 # of the second half of the web
+                                 # resource rendering
     
     def messageReceived(self, message):
-        self.handler.dispatch(message)
+        r = QPResponse.parse(message)
+        self.finished = True
+        self.transport.loseConnection()
+        self.callback(r, self.qp_request, self.web_request)
 
     def connectionMade(self):
-        self.connected = True
+        self.sendMessage(self.qp_request)
+        
 
     def connectionLost(self, reason):
-        self.connected = False
+        if not self.finished:
+            self.callback(str(reason),
+                          self.qp_request,
+                          self.web_request) # signal connectionLost
 
-    # when the web server gets a resource request
-    # it creates a QPRequest to get info needed
-    # and then calls this with the request and a callback
-    # function. Should check if
-    # protcol.connected is true first.
-    def sendRequest(self, qp_request, web_request, callback):
-        self.callback = callback
-        self.request = qp_request
-        self.web_request = web_request
-        self.sendMessage(qp_request)
-    
 
-class QPClientFactory(ReconnectingClientFactory):
-    def __init__(self, state, resource):
+class QPClientFactory(ClientFactory):
+    def __init__(self, state, q_request, w_request, callback):
         self.state = state
-        self.resource = resource # record web-resource
-                                 # if we lose connection
-                                 # we will need
-                                 # resource.request.<methods>
-                                 # to finish the request
+        self.q_request = q_request
+        self.w_request = w_request
+        self.callback = callback
         
     def buildProtocol(self, addr):
-        self.resetDelay()
-        return ClientProtocol(self.state, self.resource)
-
-    def clientConnectionLost(self, connector, reason):
-        why = str(reason).split(':')[-1][:-1].strip()
-        if self.resource.request != None:
-            self.resource.request.write(why + ', trying to reconnect.')
-            self.resource.request.finish()
-        ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+        return ClientProtocol(self.state,
+                              self.q_request,
+                              self.w_request,
+                              self.callback)
 
     def clientConnectionFailed(self, connector, reason):
-        ReconnectingClientFactory.clientConnectionFailed(self, connector,
-                                                         reason)
-        
-class Handler:
-    def __init__(self, clientProtocol):
-        self.proto = clientProtocol
+        self.callback(str(reason), self.q_request, self.w_request) # signal connectionLost
 
-    def dispatch(self, response):
-        r = QPResponse.parse(response)
-        self.proto.callback(r, self.proto.request, self.proto.web_request)
-        
-def gen_factory(state):
-    return lambda resource : QPClientFactory(state, resource)
 
+# convenience wrapper to send_request
+def make_sender(state, callback, timeout=5):
+    def send(q, w, host, port):
+        return send_request(state, host, port, q, w, callback, timeout)
+    return send
+
+# send a request        
+def send_request(state, host, port, qp_request, web_request, callback, timeout=5):
+    factory = QPClientFactory(state, qp_request, web_request, callback)
+    return reactor.connectTCP(host, port, factory, timeout=timeout)
+           
