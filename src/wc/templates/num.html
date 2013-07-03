@@ -1,0 +1,14 @@
+<div class="descriptor">
+  <span class="attribute" title="Double-click to remove.">{{attribute}}</span>
+  <span class="operator"  title="Click me to change." onclick="oponclick($(this))">{{operator}}</span><input class="value"
+  type="number", value="{{value}}" title="Bounds: [{{bounds.lower}}, {{bounds.upper}}]">
+  <ul class="olist hidden">
+    # for o,d in olist:
+    <li class="op" title="{{d}}"><a href="#">{{o}}</a></li>
+    # endfor
+  </ul>
+  <ul class="bounds hidden">
+    <li class="lower">{{bounds.lower}}</li>
+    <li class="upper">{{bounds.upper}}</li>
+  </ul>
+</div>

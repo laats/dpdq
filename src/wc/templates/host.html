@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+  <style>
+    body {
+       font-family: Verdana,Arial,sans-serif;
+    }
+    .box {
+      border:1px solid {{'#'}}ddd;
+      background-color:{{'#'}}f1f1f1;
+      -webkit-border-radius:6px;
+      -moz-border-radius:6px;
+      border-radius:6px;
+      padding:10px;
+    }
+  </style>
+  <title>Select Host</title>
+</head>
+<body>
+<h1>Select Host</h1>
+<div class="box">
+  <form name="test" action="" method="post">
+    Server host: 
+    <select name="host">
+      # for host,name in hosts.items():
+	<option value="{{host}}">{{name}}</option>
+      #endfor
+    <input type="submit" value="Submit">
+  </form>
+</div>
+</body>
+</html>

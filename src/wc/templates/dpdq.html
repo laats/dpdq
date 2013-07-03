@@ -1,0 +1,604 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+  <style>
+  .conjunction, .selectable, .picked, .box, span.value, span.operator {
+    border:1px solid {{'#'}}ddd;
+    background-color:{{'#'}}f1f1f1;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    border-radius:6px;
+    padding:10px;
+    font-family: Verdana,Arial,sans-serif;
+  }
+
+  .right {
+    float: right;
+    width: 65%;
+  }
+  .left {
+    margin-right: 30%;
+  }
+
+  .conjunction {
+    width: 45%;
+    height: 85%;
+    overflow: auto;
+  }
+
+  {{'#'}}box-tabs {
+    height: 19em;
+<!--    overflow: auto; -->
+  }
+  {{'#'}}box-selected {
+    height: 10em;
+    overflow: auto;
+  }
+  {{'#'}}box-risk {
+    height: 6em;
+    overflow: auto;
+  }
+  {{'#'}}box-predicate {
+    height: 20em;
+    overflow: auto;
+  }
+  {{'#'}}box-button {
+    height: 10em;
+  }
+  {{'#'}}box-output {
+    height: 14.5em;
+  }
+
+  {{'#'}}output {
+    height: 12em;
+    overflow: auto;
+    border:1px solid {{'#'}}444;
+  }
+
+
+  {{'#'}}pb-cell {
+    width:75%;
+  }
+
+  {{'#'}}risk-pb {
+    height: 0.5em;
+  }
+
+  {{'#'}}risk-total {
+    font-size: 80%;
+  }
+
+  
+
+  .ui-tabs-anchor {
+    padding-left:3px;
+    padding-right:3px;
+    line-height:0px;
+    font-size: 77%;
+  }
+
+  .ui-tabs-panel {
+    height: 80%;
+    overflow: auto;
+  }
+
+  .selected {
+    border:3px solid {{'#'}}444;
+    padding:8px;
+  }
+
+  .picked, span.value, span.operator {
+    padding: 0px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  h3 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 80%;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+
+  {{'#'}}box-predicate table {
+    width: 99%;
+    height: 90%;
+    overflow: auto;
+  }
+
+  td {
+    vertical-align: text-top;
+  }
+
+
+  </style>
+
+  <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"
+        type="text/css" rel="Stylesheet" />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <style>
+  .ui-tabs .ui-tabs-nav li a {
+    padding-left:3px;
+    padding-right:3px;
+  }
+  </style>
+  <script type="text/javascript">
+
+  /* 
+   * ** helpers **
+   */
+  function forEach(array, action) {
+    for (var i = 0; i < array.length; i++)
+    action(array[i]);
+  }
+
+  function reduce(combine, base, array) {
+    forEach(array, function (element) {
+      base = combine(base, element);
+    });
+    return base;
+  }
+
+  function map(fun, array) {
+    var a = [];
+    forEach(array, function (element) {
+      a.push(fun(element));
+    });
+    return a;
+  }
+
+  function ftos(x, n) {
+    var z = Math.pow(10, n)
+    return Math.round(x * z)/z
+  }
+
+  /* 
+   * ** functions for the interface **
+   */
+
+  // when clicking an operator in a conjunction descriptor
+  function oponclick(elm) {
+    var ul = elm.parent().find('ul.olist')
+    //console.log('clicked ' + $(elm).text())
+    $(ul).show()
+    var menu = ul.menu( {
+      select : function( event, ui ) {
+        //console.log('pressed: ' + ui.item.text())
+        $(this).parent().find('.operator').text(ui.item.text())
+        $(this).hide()
+      }
+    })
+  }
+
+  // when clicking a value in a conjunction descriptor
+  function valonclick(elm) {
+    var ul = elm.parent().find('ul.vlist')
+    //console.log('clicked ' + $(elm).text())
+    $(ul).show()
+    var menu = ul.menu( {
+      select : function( event, ui ) {
+        //console.log('pressed: ' + ui.item.text())
+        $(this).parent().find('.value').text(ui.item.text())
+        $(this).hide()
+      }
+    })
+  }
+
+  // clicking the "clear selected" button to clear
+  // descriptors or attributes from the currently selected
+  // area
+  function clearsel() {
+    $('.selected').find('.pickable').remove()
+    $('.selected').find('.descriptor').remove()
+  }
+
+  // when press the 'Delete' button in a
+  // conjunction created by pressing the 'Create new ...' button
+  function delcon(elm) {
+    $(elm).parent().remove()
+  }
+
+  // when clicking Clear output button
+  function clearoutput() {
+    $('#output').children().remove()
+  }
+
+  // when pressing the 'Create new conjunction' button
+  function newcon(elm) {
+    var x = $('#conj-1').clone()
+    x.find('.descriptor').remove()
+    x.removeAttr('id')
+    x.removeClass('selected')
+    x.find('input').after($('<button onclick="delcon($(this))">Delete</button>'))
+    x.click( function() {
+      $('.selected').removeClass('selected');
+      $(this).addClass('selected');
+    });
+    $('#trow').append(x)
+  }
+
+  // when pressing the 'Turn [on/off] popup help.' button
+  function toggletooltip() {
+    if ( $(document).tooltip("option", "disabled") ) {
+      $(document).tooltip("option", "disabled", false)
+      $('#tooltip').text('Turn off balloon help')
+    } else {
+      $(document).tooltip("option", "disabled", true)
+      $('#tooltip').text('Turn on balloon help')
+    }
+  }
+
+  // collect conjunctions contents into predicate list
+  function getpred() {
+    var plist = [];
+
+    forEach($('.conjunction'), function(con) {
+      //console.log('con' + con)
+      var clist = []
+      forEach($(con).find('.descriptor'), function(des) {
+        //console.log('des' + des)
+        clist.push([$(des).find('.attribute').text(),
+                      $(des).find('.operator').text(),
+                      $(des).find('.value').text() + $(des).find('.value').val()])
+      });
+      if (clist.length) {
+        var bit = 0;
+        if ($(con).find('.negated').prop('checked')) bit = 1;
+        plist.push([bit, clist])
+      }
+    });
+    return plist;
+  }
+
+  // collect processor parameters into list
+  function getparms() {
+    return map(function(par) {
+      return [$(par).find('.name').text(),
+              $(par).find('input').val()]
+      }, $('.parameter'));
+  }
+
+  // collect query into object
+  function getinfo() {
+    return {
+      dataset : $('.dataset.picked').text(),
+      processor : $('.processor.picked').text(),
+      attributes : map(function(s) { return $(s).text() },
+                         $('#selected').children()),
+      predicate : getpred(),
+      parameters : getparms(),
+      eps : $('#eps').val(),
+      request : 'info'
+    }
+  }
+
+  function postinfo() {
+    $.ajax({
+      // the URL for the request
+      url: "",
+
+      // the data to send (will be converted to a query string)
+      data: { info : JSON.stringify(getinfo()) },
+
+      // whether this is a POST or GET request
+      type: "POST",
+
+      // the type of data we expect back
+      dataType : "json",
+
+
+      // code to run if the request succeeds;
+      // the response is passed to the function
+      // expecting response to have fields:
+      //  status : the QPResponse.status 
+      //  html   : a text that can be rendered in the text output panel
+      success: function( json ) {
+
+        // scroll output to top of this result
+        var osh = $("#output")[0].scrollHeight
+        var lc = $('#output').children(':last')
+        $('#output').append(json.html)
+        var sh = $("#output")[0].scrollHeight
+        var h = Math.round($('#output').outerHeight(includeMargin=true) + 0.5)
+        if (sh > h) {
+          if (osh <= h){
+            $("#output").scrollTop(lc.outerHeight(true));
+          } else {
+            $("#output").scrollTop(osh);
+          }
+        }
+
+        if (json.status != 0) {
+          alert('Query unsuccessful, please check output window for explanation.')
+        } else {
+          // increment risk total
+          var val = parseFloat($('#risk-pb').progressbar('value'))
+          var eps = parseFloat($('#eps').val())
+          //console.log('current value: ' + val)
+          //console.log('adding: ' + eps)
+          //console.log(' = ', val + eps)
+          $('#risk-pb').progressbar('value', val + eps)
+          $('#risk-total-current').text(ftos(val+eps,3))
+        }
+      },
+
+      // code to run if the request fails; the raw request and
+      // status codes are passed to the function
+      error: function( xhr, status , err) {
+        alert( "Sorry, something went wrong. " + status + ' ' + err);
+      },
+
+    });
+  }
+
+
+  /* 
+   * ** jQuery initialization **
+   */
+  $(document).ready(function() {
+
+    // needed for selection of attribute input pane
+    $('#selected').addClass('selected')
+    $('.selectable').click( function() {
+      $('.selected').removeClass('selected');
+      $(this).addClass('selected');
+    });
+    
+    // show descriptions 
+    $(document).tooltip();
+
+    // the selection tabs
+    $('#box-tabs').tabs({ beforeLoad: function( event, ui ) {
+      var s = ui.ajaxSettings.url
+      var t = s[s.length - 1]
+      if (t == 'a') {
+        ui.ajaxSettings.url += '&a=' + $('.dataset.picked').text().trim()
+      }
+      if (t == 'p') {
+        ui.ajaxSettings.url += '&a=' + $('.processor.picked').text().trim()
+      }
+      ui.jqXHR.error(function() {
+        ui.panel.html("Sorry. Could not load this panel.");
+      });
+    }, load: function( event, ui ) {
+        $(ui.panel).find('li').dblclick(function() {
+          // where do we send?
+          if ($('.selected').hasClass('conjunction')) {
+            // conjunction, so we have to ask for a descriptor
+            var dset = $('.picked.dataset').text().trim()
+            var attr = $(this).text().trim()
+            //console.log('descriptor for ' + dset + ', ' + attr)
+            $.get("?q=d&a=" + dset + '&b=' + attr, function(resp) {
+              var x = $(resp);
+              x.dblclick(function() { $(this).remove() });
+              $('.selected').append(x);
+            });
+          }
+          else
+          {
+            // selected attributes box
+            if ($.inArray($(this).text(),
+                          map(function(x) {return $(x).text()},
+                              $('.selected li'))) == -1){
+              // is not already in the box
+              var x = $($(this).clone())
+              x[0].title = "Double-click to remove."
+              x.dblclick(function() { $(this).remove() })
+              $('.selected').append(x);
+            }
+          }
+        })
+      }
+    });
+    
+    // initialize selected dataset and processor
+    var li_d = $('#tabs-data li:first')
+    var li_p = $('#tabs-proc li:first')
+    li_d.addClass("picked")
+    li_p.addClass("picked")
+    $('#status-line .dataset').text(li_d.text().trim())
+    $('#status-line .processor').text(li_p.text().trim())
+    
+    // needed for picking attributes for either the output set
+    // or predicate conjunction descriptors
+    $('.pickable').click( function() {
+      var elm = this;
+      
+      // clear selected and conjunctions when switching datasets
+      if ($(elm).hasClass('dataset')) {
+        $('.selectable').find('.pickable').remove()
+        $('.selectable').find('.descriptor').remove()
+      }
+
+      // clear parameter tab when switching query types
+      if ($(elm).hasClass('processor')) {
+        $('.parameter').remove()
+      }
+          
+      forEach(['dataset', 'processor', 'attribute', 'parameter'], function(cls) {
+        if ( $(elm).hasClass(cls) ){
+          $('.' + cls + '.picked').removeClass('picked')
+          $(elm).addClass('picked')
+          var sl = $('#status-line span.' + cls)
+          if (sl.length > 0) {
+                sl.text($(elm).text().trim()) // set statusline
+          }
+        }
+      });
+    });
+
+    // initialize risk
+    // expected JSON {"tt": 10.0, "total": 0.0, "qt": 3.0}
+    $.getJSON("?q=r", function(resp) {
+      $('#eps').spinner(
+        { min : 0.001,
+         max : resp.qt,
+         step: 0.01 } )
+      //console.log(resp)
+      $('#risk-pb').progressbar( { max : resp.tt, value : resp.total })
+      $('#risk-total-current').text(ftos(resp.total,3))
+      $('#risk-total-max').text(resp.tt)
+      $('#eps')[0].title = 'Max per query: ' + resp.qt
+    });
+
+    // help button
+    $( "#help" ).dialog({
+      autoOpen: false, height: 400, width: 600
+    });
+    $( "#help-button" ).click(function() {
+      $( "#help" ).dialog( "open" );
+      $('#help').scrollTop(0);
+    });
+  });
+  </script>
+  <title>QP Example</title>
+</head>
+<body>
+<div id='status-line' class='box'>
+  UI v0.1
+Dataset:
+  <span id='sline-data' class='sline dataset'></span>
+Processor:
+  <span id='sline-proc' class='sline processor'></span>
+User: <span id='sline-user' class='sline user'>{{user}}</span>
+  <button id="tooltip" title="Toggle help balloons."
+          style="float:right"
+          onclick="toggletooltip()">Turn off balloon help</button>
+  <button id='help-button'
+          style="float:right"
+          title="Click here for information about how to get help.">Help</button>
+</div>
+<div id='box-predicate' class="box right">
+  <h3 title="Describe subset to query. Each outlined area below represents a conjunction of propositions. Click on outlined areas below to activate, then double-click an attribute to add a proposition."
+      >Predicate</h3>
+  <table id="conj-table">
+    <tr id="trow">
+      <td id='conj-1' class = 'conjunction selectable'>
+        <span title="Negate conjunction of propositions below.">Negated</span><input class='negated' type='checkbox' value='negated'>
+        <ul>
+        </ul>
+      </td>
+      <td id='conj-2' class = 'conjunction selectable'>
+        <span title="Negate conjunction of propositions below.">Negated</span><input class='negated' type='checkbox' value='negated'>    
+        <ul>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
+<div id='box-buttons' class="box right">
+<button id="run" onclick="postinfo()">Run Query</button>
+<!-- 
+<button id="save">Save Result</button>
+<button id="explore">Explore Result</button>
+-->
+<button onclick="newcon()" title="Add a new conjunction.">New conjunction</button>
+<button onclick="clearsel()" title="Clear the selected area (attributes/propositions).">Clear selected</button>
+<button onclick="clearoutput()" title="Clear the output area.">Clear output</button>
+
+</div>
+<div id='box-output' class="box right">
+<h3 title="Query responses.">Output</h3>
+  <div id='output'></div>
+</div>
+<div id='box-tabs' style="overflow:auto" class='box left'>
+  <ul>
+    <li><a href="#tabs-data"><span class='tabtitle' title="Select dataset to query.">Datasets</span></a></li>
+    <li><a href="#tabs-proc"><span class='tabtitle' title="Select type of query.">Query Type</span></a></li>
+    <li><a href="?q=a">
+      <span class='tabtitle' title="Attributes available for output and propositions.">Attributes</span></a>
+    </li>
+    <li><a href="?q=p">
+      <span class='tabtitle' title="Query type parameters with default values.">Parameters</span></a>
+    </li>
+  </ul>
+  <div id="tabs-data">
+    <ul>
+    # for li in datasets:
+    {{ li }}
+    # endfor
+    </ul>
+  </div>
+  <div id="tabs-proc">
+    <ul>
+    # for li in processors:
+    {{ li }}
+    # endfor
+    </ul>
+  </div>
+</div>
+<div id='box-selected' class="box left">
+  <h3 title="Attributes we want information on. Click on the area below to activate.">Output attributes</h3>
+  <ul id='selected'
+      title="Double-click attribute names to add."
+      class="selectable">
+  </ul>
+</div>
+<div id='box-risk' class="box left">
+  <h3 title="Differential privacy information.">Risk</h3>
+  <span title="Differential privacy level to use for the next query.">Query risk:</span> <input title="Differential privacy level to use for the next query." id='eps' value='1'><br>  
+  <table>
+    <tr>
+      <td id='pb-cell'><div id='risk-pb'
+                            title="Accumulated risk."></div></td>
+      <td><span id="risk-total" title="Accumulated/Total allowed.">
+        (<span id='risk-total-current'></span>/<span id='risk-total-max'></span>)
+      </span></td>
+    </tr>
+  </table>
+</div>
+<div id="help" title="Help">
+  Hovering over many elements and their titles in the user interface yields
+  bubble (tooltip) help. This functionality can be turned off/on with the button
+  to the right. 
+  <p>
+  Typical use is to
+    <ol>
+      <li>select a dataset,</li>
+      <li>select a query type,</li>
+      <li>select (output) attributes we want information on. 
+        <p>
+        This is done by 
+        first clicking on the outlined area underneath the "Output Attributes"
+        title to activate the "receiving area", then double-click on the
+        attribute names to include in the "Attributes" tab list. </p>
+        <p>
+        For some query types
+        like the counting ones (simple_count and user_pref_count) the selection of
+        attributes does not affect the result,</p>
+      </li>
+      <li>select a subset of the data to query by specifying a predicate. 
+        <p>
+        The predicate is constructed by selecting
+        "attribute operator value"  propositions (e.g., "age < 30") to go 
+        into conjunction (logical "and") groups.
+        This selection is done by activating the wanted conjunction
+        group by clicking on it, then double-clicking attribute 
+        names to insert propositions into the group. The operators and values in
+        the inserted propositions can be
+        changed by clicking on them or editing input boxes. A conjunction group's
+        meaning can be negated by checking the "Negated" checkbox. Finally,
+        the predicate is composed by the disjunction (logical or) of all
+        non-empty (and possibly negated) conjunction groups.</p>
+        <p>
+        Only data points (records) for which the predicate is true will be included.
+        An "empty" predicate (all conjunction groups are empy) is always true,
+        i.e., all points will be included.
+        For the query type "histogram", it might be better 
+        not to specify a predicate and to filter the histogram 
+        after construction instead, as more data used 
+        for construction can yield better results.</p>
+      </li>
+    </ol>
+  <p>
+  The homepage of this tool, where more information can be had, is
+  <a href="{{homepage}}" target=_blank>here</a> (opens new tab/window).
+</div>
+</body>
+</html>

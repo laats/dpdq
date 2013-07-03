@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Sun Jun 23 12:41:01 2013
-# Modified:     Tue Jun 25 15:10:34 2013 (Staal Vinterbo) staal@mats
+# Modified:     Fri Jun 28 14:37:16 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -206,7 +206,7 @@ class ClientHandler:
 
     def handle_echo(self, r):
         info('Served: ' + str((self.user_id, str(self.request))))
-        self.proto.sendMessage(QPResponse(QP_OK, r.type, r))
+        self.proto.sendMessage(QPResponse(QP_OK, r.type, str(r)))
 
     def collect(self, message):
         rar = RAResponse.parse(message)

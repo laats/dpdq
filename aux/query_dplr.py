@@ -6,7 +6,7 @@
 # Description:  Pluggable query type for DPDQ implementing logistic regression
 # Author:       Staal Vinterbo
 # Created:      Fri Jun  7 07:38:27 2013
-# Modified:     Thu Jun 20 18:56:11 2013 (Staal Vinterbo) staal@mats
+# Modified:     Wed Jul  3 14:10:04 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -58,9 +58,14 @@ def logistic_regression(eps, parms, result):
 
 logistic_regression_meta = {
     'name' : 'logistic_regression',
-    'description' : 'L2-regularized logistic regression.',
+    'description' :
+    'L2-regularized logistic regression.'
+    ' The first attribute selected is the response. '
+    'If no others are selected, all others are used as covariates. '
+    'All points are used for estimation, regardless of predicate.',
     'parameters' : {
-        'lambda' : {'type': 2, 'default': None, 'bounds': { 'lower': 0.0, 'upper': 1.0 },
+        'lambda' : {'type': 2, 'default': None,
+                    'bounds': { 'lower': 0.0, 'upper': 1.0 },
                     'description' : 'L2-regularizer value.'}}
 }
 proc_logistic_regression = {

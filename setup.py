@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 21:41:31 2013
-# Modified:     Tue Jun 25 21:58:55 2013 (Staal Vinterbo) staal@mats
+# Modified:     Wed Jul  3 13:47:10 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -50,11 +50,13 @@ setup(name=pname,
       classifiers = filter(None, classifiers.split("\n")),
       long_description = "\n".join(doclines[2:]),
       package_dir = {pname:'./src'},
+      package_data = {pname : ['wc/templates/*.html']},
       packages = [pname] + map(lambda x : pname + '.' + x, ['qp', 'cl', 'ra', 'wc']),
       scripts = glob('./scripts/dpdq*.py'),
       install_requires = ['python-gnupg >= 0.3.3',
                           'sqlalchemy >= 0.8.0',
                           'twisted >= 12.0.0',
-                          'texttable >= 0.8.1']
+                          'texttable >= 0.8.1',
+                          'jinja2 >= 2.7']
       )
 
