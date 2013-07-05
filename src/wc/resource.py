@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Wed Jul  3 14:48:54 2013 (Staal Vinterbo) staal@mats
+# Modified:     Fri Jul  5 11:00:35 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -46,6 +46,9 @@ import gnupg
 from dpdq.wc.wproto import make_sender, State
 from dpdq.messages import *    # needed for the QPRequest,QPResponse etc.
 from texttable import Texttable
+
+import pkgutil as pku
+from mimetypes import guess_type
 
 # like defaultdict(lambda : None) except no storing of missing keys
 class tdict(dict):
@@ -154,16 +157,31 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
 
         # returns (true, QPRequest) or (false, response)
         # where response should be given to request.write()
+        # if type(response) == 'str' response is set as json
+        # if type(response) == 'unicode' it is assumed that
+        # the response header is set
+        # if type(response) not above, the response is
+        # sent 'as is', i.e., assume it is a QPResponse object.
         def __call__(self, request):
-            if not 'q' in request.args:
-                return False, htemplate.render(hosts=known_hosts)
-            try:
-                rval = self.table[request.args['q'][0]](request)
-            except Exception as e:
-                print 'error: ' + str(e)
-                request.setResponseCode(404)
-                return False, str({'error' : 'Unknown request.'})
-            return rval
+            if request.path == '/':
+                if 'q' in request.args:
+                    try:
+                        rval = self.table[request.args['q'][0]](request)
+                    except Exception as e:
+                        print 'error: ' + str(e)
+                        request.setResponseCode(404)
+                        return False, str({'error' : 'Unknown request.'})
+                    return rval
+                else:
+                    return False, htemplate.render(hosts=known_hosts)
+            else: # there is a path, so we try to serve it from package data
+                try:
+                    d = pku.get_data('dpdq.wc', request.path)
+                    request.setHeader("content-type", guess_type(request.path)[0])
+                    return False, unicode(d)
+                except:
+                    request.setResponseCode(404)
+                    return False, unicode('Not found: ' + str(request.uri))
 
         def get(self, keys, fields = ['description'], classes = []):
             dd = self.meta
@@ -316,7 +334,8 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
 
                 # check if host makes sense
                 if any(o[-1]) and o.hostname == '':
-                    return NoResource(str({ 'brief' : 'Please specify "host:port"' }))
+                    request.setReseponseCode(404)
+                    return 'Please specify "host[:port]"'
 
                 # got something that resembles host:port
                 port = o.port if o.port else default_port
@@ -467,7 +486,7 @@ if __name__ == '__main__':
     key_id = 'Alice'
     qp_id = 'QueryServer'
     # only connect to known hosts
-    known_hosts = {'localhost:8123' : 'Demo host' }
+    known_hosts = {'localhost:8123' : 'Demon' }
 
 
     root = init_resource(gpghome, key_id, qp_id, known_hosts,

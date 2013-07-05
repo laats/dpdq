@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Wed Jul  3 15:06:12 2013 (Staal Vinterbo) staal@mats
+# Modified:     Fri Jul  5 11:03:16 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         print Version
         sys.exit(0)
 
-    known_hosts = { known_host : 'Demo host' }    
+    known_hosts = { known_host : 'Demo' }    
 
     if args.hostsfile:
         try:
