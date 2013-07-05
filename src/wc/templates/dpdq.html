@@ -36,6 +36,7 @@
   .css-table
   {
     display: table;
+    max-width: 996px;
   }
   .css-row
   {
@@ -96,13 +97,22 @@
   /* named elements */
 
   {{'#'}}layout {
+    position: relative;
+    /* width:100%; */
     height: 35em;
     max-height: 35em;
-    max-width: 996px;
+    /* max-width: 996px; */
+    width: 996px;
+    margin-left:auto; margin-right:auto;
+  }
+
+  {{'#'}}status-line {
+    width: 100%;
   }
 
   {{'#'}}layout-table {
     height: 100%;
+    width:100%;
   }
 
   {{'#'}}upper-row {
@@ -141,7 +151,7 @@
     padding-left:3px;
     padding-right:3px;
     line-height:0px;
-    font-size: 77%;
+    font-size: 76%;
   }
 
   .ui-tabs-panel {
@@ -229,6 +239,7 @@
 
   {{'#'}}output {
     border:1px solid {{'#'}}444;
+    width: 643px;
   }
 
 
@@ -485,7 +496,7 @@
     }, load: function( event, ui ) {
         // double click in attribute list
         /* $(ui.panel).find('li').dblclick(function() { */
-        $(ui.panel).find('li').on("dblclick touch", function() {
+        $(ui.panel).find('li').on("click", function() {
           // where do we send?
           if ($('.selected').hasClass('conjunction')) {
             // conjunction, so we have to ask for a descriptor
@@ -494,7 +505,9 @@
             //console.log('descriptor for ' + dset + ', ' + attr)
             $.get("?q=d&a=" + dset + '&b=' + attr, function(resp) {
               var x = $(resp);
-              x.on("dblclick touch", function() { $(this).remove() });
+              x.find('.attribute').on("click",
+                                      function() {
+                  $(this).closest('.descriptor').remove() });
               $('.selected').append(x);
             });
           }
@@ -506,8 +519,8 @@
                               $('.selected li'))) == -1){
               // is not already in the box
               var x = $($(this).clone())
-              x[0].title = "Double-click to remove."
-              x.on("dblclick touch", function() { $(this).remove() })
+              x[0].title = "Select to remove."
+              x.on("click", function() { $(this).remove() })
               $('.selected').append(x);
             }
           }
@@ -581,7 +594,6 @@
 
 <body>
 <div id='layout'>
-
   <div id='status-line' class='box'>
   UI v0.1
 Dataset:
@@ -596,6 +608,7 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
             style="float:right"
             title="Click here for information about how to get help.">Help</button>
   </div>
+  
 
   <div id='layout-table' class='css-table'>
     <div id='upper-row' class='css-row'>
@@ -648,7 +661,7 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
 
       <!-- right cell -->
       <div id='box-predicate' class="box right css-cell">
-        <h3 title="Describe subset to query. Each outlined area below represents a conjunction of propositions. Click on outlined areas below to activate, then double-click an attribute to add a proposition."
+        <h3 title="Describe subset to query. Each outlined area below represents a conjunction of propositions. Click on outlined areas below to activate, then select an attribute to add a proposition."
             >Predicate</h3>
         <div id="c-table" class="css-table">
           <div id="c-row" class="css-row">
@@ -687,7 +700,7 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
           <h3 title="Attributes we want information on. Click on the area below to activate.">Output attributes</h3>
           <div id='selected-container'>
             <ul id='selected'
-                title="Double-click attribute names to add."
+                title="Select attribute names to add."
                 class="fixed-sel selectable overflow-auto">
             </ul>
           </div>
@@ -746,8 +759,9 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
         <p>
         This is done by 
         first clicking on the outlined area underneath the "Output Attributes"
-        title to activate the "receiving area", then double-click on the
-        attribute names to include in the "Attributes" tab list. </p>
+        title to activate the "receiving area", then click on the
+        attribute names to include in the "Attributes" tab list. 
+        </p>
         <p>
         For some query types
         like the counting ones (simple_count and user_pref_count) the selection of
@@ -759,7 +773,7 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
         "attribute operator value"  propositions (e.g., "age < 30") to go 
         into conjunction (logical "and") groups.
         This selection is done by activating the wanted conjunction
-        group by clicking on it, then double-clicking attribute 
+        group by clicking on it, then clicking attribute 
         names to insert propositions into the group. The operators and values in
         the inserted propositions can be
         changed by clicking on them or editing input boxes. A conjunction group's
