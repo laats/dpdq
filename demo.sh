@@ -7,7 +7,7 @@
 #               /tmp/dpdq/[cqr]
 # Author:       Staal Vinterbo
 # Created:      Fri May 10 16:44:21 2013
-# Modified:     Tue Jun 25 21:14:16 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sat Jul  6 00:33:28 2013 (Staal Vinterbo) staal@mats
 # Language:     Shell-script
 # Package:      N/A
 # Status:       Experimental
@@ -95,10 +95,12 @@ rm -f /tmp/dpdq/r/risk.db
 
 echo "creating users that have budgets..."
 echo creating risk users
-dpdq_riskuser.py -g /tmp/dpdq/r sqlite:////tmp/dpdq/r/risk.db Alice &> /dev/null
+dpdq_riskuser.py -t 100 -g /tmp/dpdq/r sqlite:////tmp/dpdq/r/risk.db Alice &> /dev/null
 echo created Alice
-dpdq_riskuser.py -n sqlite:////tmp/dpdq/r/risk.db Demo &> /dev/null
+dpdq_riskuser.py -t 100 -n sqlite:////tmp/dpdq/r/risk.db Demo &> /dev/null
 echo created Demo
+dpdq_riskuser.py -t 100 -n sqlite:////tmp/dpdq/r/risk.db Demo-2 &> /dev/null
+echo created Demo-2
      
 # start servers
 echo "Starting servers..."
@@ -115,34 +117,53 @@ then
     (kill `cat /tmp/dpdq/q/pid`) &> /dev/null || echo 'QP not running...'
     rm -f /tmp/dpdq/q/pid
 fi
+if [ -f /tmp/dpdq/c/pid ]
+then
+    (kill `cat /tmp/dpdq/c/pid`) &> /dev/null || echo 'Web server not running...'
+    rm -f /tmp/dpdq/c/pid
+fi
+
+
 echo " Starting new ones..."
 if hash xterm 2> /dev/null; then
     xterm -T Risk_Accountant -e dpdq_rserver.py -g /tmp/dpdq/r sqlite:////tmp/dpdq/r/risk.db &
     echo $! > /tmp/dpdq/r/pid
     xterm -T Query_Processor -e dpdq_qserver.py --allow_alias -g /tmp/dpdq/q sqlite:////tmp/dpdq/q/warehouse.db -q aux/query_dplr.py &
     echo $! > /tmp/dpdq/q/pid
+    xterm -T Web -e dpdq_web.py -g /tmp/dpdq/c &
+    echo $! > /tmp/dpdq/c/pid
 else
     echo "starting servers in the background. You will need to kill them explicitly!"
     dpdq_rserver.py -g /tmp/dpdq/r sqlite:////tmp/dpdq/r/risk.db > /dev/null &
     echo $! > /tmp/dpdq/r/pid
     dpdq_qserver.py --allow_alias -g /tmp/dpdq/q sqlite:////tmp/dpdq/q/warehouse.db > /dev/null &
     echo $! > /tmp/dpdq/q/pid
+    dpdq_web.py -g /tmp/dpdq/c &> /dev/null &
+    echo $! > /tmp/dpdq/c/pid
 fi
 echo "Server process id's (pid) are found in /tmp/dpdq/r/pid and /tmp/dpdq/q/pid."
-echo 'They can be killed by "kill `cat /tmp/dpdq/[qr]/pid`", respsectively.'
+echo 'They can be killed by "kill `cat /tmp/dpdq/[qrc]/pid`", respsectively.'
 echo ''
-echo 'Waiting for servers to initialize...'
-sleep 4
+echo 'To enjoy the web interface for user Demo, point browser to:'
+echo '  http://localhost:8082'
+echo ''
+#echo 'Giving servers a few seconds to initialize before starting text client...'
+#sleep 3
 
-echo "starting client for Alice..."
-# start clients
 
-if [ "$#" -ge 1 ] &&  [ -f $1 ]
-then
-    cat $1 | dpdq_cli.py -k Alice -g /tmp/dpdq/c -f
-else
-    dpdq_cli.py -k Alice -g /tmp/dpdq/c
-fi
+# if [ "$#" -ge 1 ] &&  [ -f $1 ]
+#then
+#    cat $1 | dpdq_cli.py -k Alice -g /tmp/dpdq/c -f
+#else
+#    dpdq_cli.py -k Alice -g /tmp/dpdq/c
+#fi
+
+echo 'If you ran this script using source ("source demo.sh") then'
+echo 'you can start the text client by issuing:'
+echo '  dpdq'  
+echo 'at the command prompt. Otherwise you will need to issue:'
+echo '  dpdq_cli.py -g /tmp/dpdq/c -k Alice'
+alias dpdq='dpdq_cli.py -g /tmp/dpdq/c -k Alice'
 
 
 
