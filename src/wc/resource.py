@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Fri Jul  5 11:00:35 2013 (Staal Vinterbo) staal@mats
+# Modified:     Fri Jul  5 22:37:38 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -45,6 +45,7 @@ from jinja2 import Environment, PackageLoader
 import gnupg
 from dpdq.wc.wproto import make_sender, State
 from dpdq.messages import *    # needed for the QPRequest,QPResponse etc.
+from dpdq import Version
 from texttable import Texttable
 
 import pkgutil as pku
@@ -163,6 +164,7 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
         # if type(response) not above, the response is
         # sent 'as is', i.e., assume it is a QPResponse object.
         def __call__(self, request):
+
             if request.path == '/':
                 if 'q' in request.args:
                     try:
@@ -438,7 +440,8 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
                 s = template.render(datasets = sorted(dsets),
                                     processors = sorted(procs),
                                     user=web_request.getUser() or 'Demo',
-                                    homepage=homepage)
+                                    homepage=homepage,
+                                    version=Version)
                 web_request.write(s.encode('ascii'))
                 web_request.finish()
                 return

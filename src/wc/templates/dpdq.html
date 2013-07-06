@@ -1,592 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <head>
-
   <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"
         type="text/css" rel="Stylesheet" />
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-
-  <style>
-
-
-  /* **** general settings **** */
-
-  .hidden {
-    display: none;
-  }
-
-  h3 {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    font-size: 80%;
-  }
-
-  ul {
-    list-style-type: none;
-  }
-  ul, li {
-    margin-left: 0;
-    padding-left: 0;
-  }
-
-  /* two column layout */
-
-  .css-table
-  {
-    display: table;
-    max-width: 996px;
-  }
-  .css-row
-  {
-    display: table-row;
-  }
-
-  .css-cell
-  {
-    display: table-cell;
-    height: 100%;
-  }
-
-  .right {
-    width: 65%;
-  }
-
-  .left {
-    width: 35%;
-  }
-
-  .half {
-    width: 50%;
-  }
-
-  /* Fixed size elements, for overflow: auto */
-
-  .fixed-con {
-    height: 17em;
-    width: 297px;
-  }
-
-  .fixed-sel {
-    height: 6em;
-  }
-
-  .fixed-out {
-    height: 10em;
-  }
-
-  .overflow-auto {
-    overflow: auto;
-  }
-
-  /* other stuff */
-
-  .negated-checkbox { 
-  }
-
-  .sline {
-    font-weight: bold;
-  }
-
-  li.pickable {
-    float: left;
-    clear: left;
-  }
-
-  /* named elements */
-
-  {{'#'}}layout {
-    position: relative;
-    /* width:100%; */
-    height: 35em;
-    max-height: 35em;
-    /* max-width: 996px; */
-    width: 996px;
-    margin-left:auto; margin-right:auto;
-  }
-
-  {{'#'}}status-line {
-    width: 100%;
-  }
-
-  {{'#'}}layout-table {
-    height: 100%;
-    width:100%;
-  }
-
-  {{'#'}}upper-row {
-    height: 55%;
-  }
-
-  {{'#'}}lower-row {
-    height: 45%;
-  }
-
-  /* rounded borders and background color of outer boxes */
-  .conjunction, .selectable,  .picked, .box, span.value, span.operator {
-    border:1px solid {{'#'}}ddd;
-    -webkit-border-radius:6px;
-    -moz-border-radius:6px;
-    border-radius:6px;
-    /* padding:10px; */
-    font-family: Verdana,Arial,sans-serif;
-    /* background-color: {{'#'}}f1f1f1; */
-  }
-
-  /* fix selectable panels so that they are centered in their respective
-  containers */
-  .selectable {
-    margin-left: 3%;
-    margin-right: 3%;
-    width: 92%;
-  }
-
-
-  /* **** Individual boxes **** */
-
-  /* ----- Tabbed box for selecting things -------- */
-
-  .ui-tabs-anchor {
-    padding-left:3px;
-    padding-right:3px;
-    line-height:0px;
-    font-size: 76%;
-  }
-
-  .ui-tabs-panel {
-    height: 80%;
-    overflow: auto;
-    /* background-color: {{'#'}}fff; */
-    height: 238px;
-  }
-
-  .picked {
-    border:1.5px solid;
-    padding: 1px;
-  }
-
-  .ui-tabs .ui-tabs-nav li a {
-    padding-left:3px;
-    padding-right:3px;
-    /* background-color: {{'#'}}f1f1f1; */
-  }
-
-  /* ------ Output attributes ----------- */
-
-  {{'#'}}box-selected {
-    height: 100%;
-  }
-
-  {{'#'}}selected-container {
-    height: 45%; /* subtract h3 */
-    width: 100%;
-  }
-
-  {{'#'}}selected {
-    padding: 0px;  /* inherits weird padding from other css (?) */
-  }
-
-  /* ------- Risk box ----------- */
-
-  {{'#'}}box-risk {
-    height: 45%;
-  }
-
-  {{'#'}}pb-cell {
-    width:84%;
-  }
-
-  {{'#'}}risk-pb {
-    height: 0.5em;
-  }
-
-  {{'#'}}risk-total {
-    font-size: 80%;
-  }
-
-
-  /* ------ Predicate box ---------- */
-
-
-  {{'#'}}c-table {
-    display: table;
-    height: 85%;
-    width: 100%;
-  }
-
-  span.value, span.operator {
-    padding: 0px;
-  }
-
-
-  /* ------- Button row ---------- */
-
-  {{'#'}}box-button {
-    /* height: 10%; */
-  }
-
-
-  /* ------- Output box ----------- */
-
-  {{'#'}}boottom-right {
-    height: 100%;
-  }
-
-  {{'#'}}box-output {
-    height: 80%;
-  }
-
-  {{'#'}}output {
-    border:1px solid {{'#'}}444;
-    max-width: 643px;
-  }
-
-
-  /* **** multi-box overrides **** */
-
-  /* make selected attribute/descriptor area stand out */
-  .selected {
-    border:3px solid {{'#'}}444;
-    background-color: {{'#'}}fff;
-  }
-
-  </style>
-
-
-
+  <link href="css/dpdq.css" type="text/css" rel="Stylesheet" />
+  <script src="js/dpdq.js"></script>
   <script type="text/javascript">
-
-  /* 
-   * ** helpers **
-   */
-  function forEach(array, action) {
-    for (var i = 0; i < array.length; i++)
-    action(array[i]);
-  }
-
-  function reduce(combine, base, array) {
-    forEach(array, function (element) {
-      base = combine(base, element);
-    });
-    return base;
-  }
-
-  function map(fun, array) {
-    var a = [];
-    forEach(array, function (element) {
-      a.push(fun(element));
-    });
-    return a;
-  }
-
-  function ftos(x, n) {
-    var z = Math.pow(10, n)
-    return Math.round(x * z)/z
-  }
-
-  /* 
-   * ** functions for the interface **
-   */
-
-  // when clicking an operator in a conjunction descriptor
-  function oponclick(elm) {
-    var ul = elm.parent().find('ul.olist')
-    //console.log('clicked ' + $(elm).text())
-    $(ul).show()
-    var menu = ul.menu( {
-      select : function( event, ui ) {
-        //console.log('pressed: ' + ui.item.text())
-        $(this).parent().find('.operator').text(ui.item.text())
-        $(this).hide()
-      }
-    })
-  }
-
-  // when clicking a value in a conjunction descriptor
-  function valonclick(elm) {
-    var ul = elm.parent().find('ul.vlist')
-    //console.log('clicked ' + $(elm).text())
-    $(ul).show()
-    var menu = ul.menu( {
-      select : function( event, ui ) {
-        //console.log('pressed: ' + ui.item.text())
-        $(this).parent().find('.value').text(ui.item.text())
-        $(this).hide()
-      }
-    })
-  }
-
-  // clicking the "clear selected" button to clear
-  // descriptors or attributes from the currently selected
-  // area
-  function clearsel() {
-    $('.selected').find('.pickable').remove()
-    $('.selected').find('.descriptor').remove()
-  }
-
-  // when press the 'Delete' button in a
-  // conjunction created by pressing the 'Create new ...' button
-  function delcon(elm) {
-    $(elm).closest('.css-cell').remove()
-  }
-
-  // when clicking Clear output button
-  function clearoutput() {
-    $('#output').children().remove()
-  }
-
-  // when pressing the 'Create new conjunction' button
-  function newcon(elm) {
-    var x = $('#css-cell').clone()
-    x.find('.descriptor').remove()
-    x.removeAttr('id')
-    x.removeClass('selected')
-    x.find('.negated-checkbox').after($('<button onclick="delcon($(this))">Delete</button>'))
-    x.click( function() {
-      $('.selected').removeClass('selected');
-      $(this).addClass('selected');
-    });
-    $('#c-row').append(x)
-  }
-
-  // when pressing the 'Turn [on/off] popup help.' button
-  function toggletooltip() {
-    if ( $(document).tooltip("option", "disabled") ) {
-      $(document).tooltip("option", "disabled", false)
-      $('#tooltip').text('Turn off balloon help')
-    } else {
-      $(document).tooltip("option", "disabled", true)
-      $('#tooltip').text('Turn on balloon help')
-    }
-  }
-
-  // collect conjunctions contents into predicate list
-  function getpred() {
-    var plist = [];
-
-    forEach($('.conjunction'), function(con) {
-      //console.log('con' + con)
-      var clist = []
-      forEach($(con).find('.descriptor'), function(des) {
-        //console.log('des' + des)
-        clist.push([$(des).find('.attribute').text(),
-                      $(des).find('.operator').text(),
-                      $(des).find('.value').text() + $(des).find('.value').val()])
-      });
-      if (clist.length) {
-        var bit = 0;
-        if ($(con).find('.negated').prop('checked')) bit = 1;
-        plist.push([bit, clist])
-      }
-    });
-    return plist;
-  }
-
-  // collect processor parameters into list
-  function getparms() {
-    return map(function(par) {
-      return [$(par).find('.name').text(),
-              $(par).find('input').val()]
-      }, $('.parameter'));
-  }
-
-  // collect query into object
-  function getinfo() {
-    return {
-      dataset : $('.dataset.picked').text(),
-      processor : $('.processor.picked').text(),
-      attributes : map(function(s) { return $(s).text() },
-                         $('#selected').children()),
-      predicate : getpred(),
-      parameters : getparms(),
-      eps : $('#eps').val(),
-      request : 'info'
-    }
-  }
-
-  function postinfo() {
-    $.ajax({
-      // the URL for the request
-      url: "",
-
-      // the data to send (will be converted to a query string)
-      data: { info : JSON.stringify(getinfo()) },
-
-      // whether this is a POST or GET request
-      type: "POST",
-
-      // the type of data we expect back
-      dataType : "json",
-
-
-      // code to run if the request succeeds;
-      // the response is passed to the function
-      // expecting response to have fields:
-      //  status : the QPResponse.status 
-      //  html   : a text that can be rendered in the text output panel
-      success: function( json ) {
-
-        // scroll output to top of this result
-        var osh = $("#output")[0].scrollHeight
-        var lc = $('#output').children(':last')
-        $('#output').append(json.html)
-        var sh = $("#output")[0].scrollHeight
-        var h = Math.round($('#output').outerHeight(includeMargin=true) + 0.5)
-        if (sh > h) {
-          if (osh <= h){
-            $("#output").scrollTop(lc.outerHeight(true));
-          } else {
-            $("#output").scrollTop(osh);
-          }
-        }
-
-        if (json.status != 0) {
-          alert('Query unsuccessful, please check output window for explanation.')
-        } else {
-          // increment risk total
-          var val = parseFloat($('#risk-pb').progressbar('value'))
-          var eps = parseFloat($('#eps').val())
-          //console.log('current value: ' + val)
-          //console.log('adding: ' + eps)
-          //console.log(' = ', val + eps)
-          $('#risk-pb').progressbar('value', val + eps)
-          $('#risk-total-current').text(ftos(val+eps,3))
-        }
-      },
-
-      // code to run if the request fails; the raw request and
-      // status codes are passed to the function
-      error: function( xhr, status , err) {
-        alert( "Sorry, something went wrong. " + status + ' ' + err);
-      },
-
-    });
-  }
-
-
-  /* 
-   * ** jQuery initialization **
-   */
-  $(document).ready(function() {
-
-    // needed for selection of attribute input pane
-    $('#selected').addClass('selected')
-    $('.selectable').click( function() {
-      $('.selected').removeClass('selected');
-      $(this).addClass('selected');
-    });
-    
-    // show descriptions 
-    $(document).tooltip();
-
-    // the selection tabs
-    $('#box-tabs').tabs({ beforeLoad: function( event, ui ) {
-      var s = ui.ajaxSettings.url
-      var t = s[s.length - 1]
-      if (t == 'a') {
-        ui.ajaxSettings.url += '&a=' + $('.dataset.picked').text().trim()
-      }
-      if (t == 'p') {
-        ui.ajaxSettings.url += '&a=' + $('.processor.picked').text().trim()
-      }
-      ui.jqXHR.error(function() {
-        ui.panel.html("Sorry. Could not load this panel.");
-      });
-    }, load: function( event, ui ) {
-        // double click in attribute list
-        /* $(ui.panel).find('li').dblclick(function() { */
-        $(ui.panel).find('li').on("click", function() {
-          // where do we send?
-          if ($('.selected').hasClass('conjunction')) {
-            // conjunction, so we have to ask for a descriptor
-            var dset = $('.picked.dataset').text().trim()
-            var attr = $(this).text().trim()
-            //console.log('descriptor for ' + dset + ', ' + attr)
-            $.get("?q=d&a=" + dset + '&b=' + attr, function(resp) {
-              var x = $(resp);
-              x.find('.attribute').on("click",
-                                      function() {
-                  $(this).closest('.descriptor').remove() });
-              $('.selected').append(x);
-            });
-          }
-          else
-          {
-            // selected attributes box
-            if ($.inArray($(this).text(),
-                          map(function(x) {return $(x).text()},
-                              $('.selected li'))) == -1){
-              // is not already in the box
-              var x = $($(this).clone())
-              x[0].title = "Select to remove."
-              x.on("click", function() { $(this).remove() })
-              $('.selected').append(x);
-            }
-          }
-        })
-      }
-    });
-    
-    // initialize selected dataset and processor
-    var li_d = $('#tabs-data li:first')
-    var li_p = $('#tabs-proc li:first')
-    li_d.addClass("picked")
-    li_p.addClass("picked")
-    $('#status-line .dataset').text(li_d.text().trim())
-    $('#status-line .processor').text(li_p.text().trim())
-    
-    // needed for picking attributes for either the output set
-    // or predicate conjunction descriptors
-    $('.pickable').click( function() {
-      var elm = this;
-      
-      // clear selected and conjunctions when switching datasets
-      if ($(elm).hasClass('dataset')) {
-        $('.selectable').find('.pickable').remove()
-        $('.selectable').find('.descriptor').remove()
-      }
-
-      // clear parameter tab when switching query types
-      if ($(elm).hasClass('processor')) {
-        $('.parameter').remove()
-      }
-          
-      forEach(['dataset', 'processor', 'attribute', 'parameter'], function(cls) {
-        if ( $(elm).hasClass(cls) ){
-          $('.' + cls + '.picked').removeClass('picked')
-          $(elm).addClass('picked')
-          var sl = $('#status-line span.' + cls)
-          if (sl.length > 0) {
-                sl.text($(elm).text().trim()) // set statusline
-          }
-        }
-      });
-    });
-
-    // initialize risk
-    // expected JSON {"tt": 10.0, "total": 0.0, "qt": 3.0}
-    $.getJSON("?q=r", function(resp) {
-      $('#eps').spinner(
-        { min : 0.001,
-         max : resp.qt,
-         step: 0.01 } )
-      //console.log(resp)
-      $('#risk-pb').progressbar( { max : resp.tt, value : resp.total })
-      $('#risk-total-current').text(ftos(resp.total,3))
-      $('#risk-total-max').text(resp.tt)
-      $('#eps')[0].title = 'Max per query: ' + resp.qt
-    });
-
-    // help button
-    $( "#help" ).dialog({
-      autoOpen: false, height: 400, width: 600
-    });
-    $( "#help-button" ).click(function() {
-      $( "#help" ).dialog( "open" );
-      $('#help').scrollTop(0);
-    });
-  });
+    $(document).ready(initdpdq)
   </script>
   <title>DPDQ Web Client</title>
 </head>
@@ -595,12 +17,14 @@
 <body>
 <div id='layout'>
   <div id='status-line' class='box'>
-  UI v0.1
+    <h2 id='sline-h2'>
+      <span id='progname'>DPDQ Web GUI {{version}}</span>
 Dataset:
     <span id='sline-data' class='sline dataset'></span>
 Processor:
     <span id='sline-proc' class='sline processor'></span>
 User: <span id='sline-user' class='sline user'>{{user}}</span>
+    </h2>
     <button id="tooltip" title="Toggle help balloons."
             style="float:right"
             onclick="toggletooltip()">Turn off balloon help</button>
@@ -663,30 +87,30 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
       <div id='box-predicate' class="box right css-cell">
         <h3 title="Describe subset to query. Each outlined area below represents a conjunction of propositions. Click on outlined areas below to activate, then select an attribute to add a proposition."
             >Predicate</h3>
-        <div id="c-table" class="css-table">
-          <div id="c-row" class="css-row">
-            <div id='css-cell' class='css-cell half'>
-              <div id='conj-1'
-                   class = 'conjunction selectable fixed-con selectable overflow-auto'>
-                <div class='negated-checkbox'>
-                  <span title="Negate conjunction of propositions below."
-                        >Negated
-                  </span>
-                  <input class='negated' type='checkbox' value='negated'>
-                </div>
-              </div>
-            </div>
-            <div class='css-cell half'>
-              <div class = 'fixed-con conjunction selectable overflow-auto'>
-                <div class='negated-checkbox'>
-                  <span title="Negate conjunction of propositions below."
-                        >Negated
-                  </span>
-                  <input class='negated' type='checkbox' value='negated'>
-                </div>
+        <div id="c-row" class="overflow-auto full">
+
+          <div id='css-cell' class='css-cell half'>
+            <div id='conj-1' class = 'conjunction selectable fixed-con overflow-auto'>
+              <div class='negated-checkbox'>
+                <span title="Negate conjunction of propositions below."
+                      >Negated
+                </span>
+                <input class='negated' type='checkbox'  value='negated'>
               </div>
             </div>
           </div>
+
+          <div class='css-cell half'>
+            <div class = 'conjunction selectable fixed-con overflow-auto'>
+              <div class='negated-checkbox'>
+                <span title="Negate conjunction of propositions below."
+                      >Negated
+                </span>
+                <input class='negated' type='checkbox' value='negated'>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -709,7 +133,7 @@ User: <span id='sline-user' class='sline user'>{{user}}</span>
 
         <!-- <div id='box-risk' class="box"> -->
           <!-- <h3 title="Differential privacy information.">Risk</h3> -->
-          <span title="Differential privacy level to use for the next query.">Query risk:</span> <input title="Differential privacy level to use for the next query." id='eps' value='1'>
+          <h3 id='r-title' title="Differential privacy level to use for the next query.">Query risk:</h3> <input title="Differential privacy level to use for the next query." id='eps' value='1'>
           <p>
           <table>
             <tr>

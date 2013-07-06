@@ -1,0 +1,345 @@
+/* -*-CSS-*-
+********************************************************************************
+*
+* File:         dpdq.css
+* RCS:          $Header: $
+* Description:  
+* Author:       Staal Vinterbo
+* Created:      Fri Jul  5 11:22:36 2013
+* Modified:     Fri Jul  5 23:18:28 2013 (Staal Vinterbo) staal@mats
+* Language:     CSS
+* Package:      N/A
+* Status:       Experimental
+*
+* (c) Copyright 2013, Staal Vinterbo, all rights reserved.
+*
+* dpdq.css is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* dpdq.css is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with dpdq.css; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+********************************************************************************
+*/
+
+
+
+/* **** general settings **** */
+
+.hidden {
+    display: none;
+}
+
+h2 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    font-size: 80%;
+    display: inline;
+}
+
+h3 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    font-size: 80%;
+}
+
+
+ul {
+    list-style-type: none;
+}
+ul, li {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* two column layout */
+
+.css-table
+{
+    display: table;
+    max-width: 996px;
+}
+.css-row
+{
+    display: table-row;
+}
+
+.css-cell
+{
+    display: table-cell;
+    height: 100%;
+}
+
+.right {
+    width: 65%;
+}
+
+.left {
+    width: 35%;
+}
+
+.half {
+    width: 50%;
+}
+
+.full {
+    width: 100%;
+}
+
+/* other stuff */
+
+.negated-checkbox { 
+}
+
+.sline.dataset, .sline.processor {
+    font-weight: bold;
+}
+
+li.pickable {
+    float: left;
+    clear: left;
+}
+
+.ui-button .ui-button-text
+{
+    line-height: 0.7;
+    font-size: 0.75em !important;
+}
+
+/* named elements */
+
+#layout {
+    position: relative;
+    /* width:100%; */
+    height: 35em;
+    max-height: 35em;
+    /* max-width: 996px; */
+    width: 996px;
+    margin-left:auto; margin-right:auto;
+}
+
+#status-line {
+    width: 100%;
+}
+
+#layout-table {
+    height: 100%;
+    width:100%;
+}
+
+#upper-row {
+    height: 55%;
+}
+
+#lower-row {
+    height: 45%;
+}
+
+#progname {
+    margin-right: 3em;
+}
+
+#tooltip { /* needed because settings get lost when toggling */
+    /* line-height: 0.7; */
+    /* font-size: 0.75em !important;  */
+}
+
+/* rounded borders and background color of outer boxes */
+.conjunction, .selectable,  .picked, .box, span.value, span.operator {
+    border:1px solid #ddd;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    border-radius:6px;
+    /* padding:10px; */
+    font-family: Verdana,Arial,sans-serif;
+/* background-color: #f1f1f1; */
+}
+
+/* fix selectable panels so that they are centered in their respective
+   containers */
+.selectable {
+    margin-left: 3%;
+    margin-right: 3%;
+    width: 92%;
+}
+
+
+/* **** Individual boxes **** */
+
+/* ----- Tabbed box for selecting things -------- */
+
+.ui-tabs-anchor {
+    padding-left:3px;
+    padding-right:3px;
+    line-height:0px;
+    font-size: 76%;
+}
+
+.ui-tabs-panel {
+    height: 80%;
+    overflow: auto;
+    /* background-color: #fff; */
+    height: 238px;
+}
+
+.picked {
+    border:1.5px solid;
+    padding: 1px;
+}
+
+.ui-tabs .ui-tabs-nav li a {
+    padding-left:3px;
+    padding-right:3px;
+/* background-color: #f1f1f1; */
+}
+
+/* ------ Output attributes ----------- */
+
+#box-selected {
+    height: 100%;
+}
+
+#selected-container {
+    height: 45%; /* subtract h3 */
+    width: 100%;
+}
+
+#selected {
+    padding: 0px;  /* inherits weird padding from other css (?) */
+}
+
+/* ------- Risk box ----------- */
+
+#box-risk {
+    height: 45%;
+}
+
+#pb-cell {
+    width:84%;
+}
+
+#risk-pb {
+    height: 0.5em;
+}
+
+#risk-total {
+    font-size: 80%;
+}
+
+#r-title {
+    display: inline;
+}
+
+/* ------ Predicate box ---------- */
+
+
+#c-table {
+    display: table;
+    height: 85%;
+    width: 100%;
+}
+
+#c-row {
+    width: 643px;
+}
+
+span.value, span.operator {
+    padding: 0px;
+}
+
+.negated-checkbox {
+    font-size: 80%;
+}
+
+/* ------- Button row ---------- */
+
+#box-button {
+/* height: 10%; */
+}
+
+
+/* ------- Output box ----------- */
+
+#boottom-right {
+    height: 100%;
+}
+
+#box-output {
+    height: 80%;
+}
+
+#output {
+    border:1px solid #444;
+    max-width: 643px;
+}
+
+
+/* **** multi-box overrides **** */
+
+/* make selected attribute/descriptor area stand out */
+.selected {
+    border:1px solid #000;
+    background-color: #fff;
+}
+
+/* Fixed size elements, for overflow: auto */
+
+.fixed-con {
+    height: 17em;
+    width: 297px;
+}
+
+.fixed-sel {
+    height: 6em;
+}
+
+.fixed-out {
+    height: 10em;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+/* **** colors **** */
+
+.box {
+    background: #F2F5F7;
+}
+
+.selected {
+    background: #FBF6EB;
+}
+
+.ui-widget-content {
+    background: #F2F5F7;
+    border: 1px solid #DDDDDD;
+    color: #362B36;
+}
+
+.ui-widget-header {
+    background: #F2F5F7;
+    /* background: #B3D4FC; */
+}
+
+h3, .ui-button-text, .tabtitle, .negated-checkbox, #tooltip {
+    color:#20639b;
+}
+
+#sline-data, #sline-proc, .picked, .ui-progressbar-value {
+    color: #f06024;
+}
+
+.ui-progressbar-value {
+    background: #f06024;
+}
