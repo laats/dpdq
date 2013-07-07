@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Fri Jul  5 11:03:16 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jul  7 14:13:09 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -56,8 +56,7 @@ if __name__ == '__main__':
                 ' from and about datasets '+ 
                 'from a query processing server.'))
     parser.add_argument("-k", "--key", type=str, default='Alice',
-                        help = 'the key identifier for the user this'
-                        ' client acts on behalf of (default: "%(default)s").')
+                        help = 'the key identifier for the web-server')
     parser.add_argument("-s", "--query_server_key", type=str,
                         default='QueryServer',
                         help = 'the key identifier for the query server'
@@ -69,6 +68,12 @@ if __name__ == '__main__':
                         ' files (default: "%(default)s").')
     parser.add_argument('-f', "--hostsfile", type=str, default=None,
                         help = 'URL pointing to known hosts python dict.')
+    parser.add_argument('-u', "--user", type=str, default='Demo',
+                        help = 'The user to query on behalf on, if not given'
+                        ' by REMOTE_USER (default: %(default)s).')
+    parser.add_argument("--use_alias_fingerprint", action='store_true', 
+                        help = 'use the alias key fingerprint as identifier when '
+                        'sending requests.')
     parser.add_argument('-i', "--infopage", type=str,
                         default='http://ptg.ucsd.edu/~staal/dpdq',
                         help = 'URL pointing to the DPDQ homepage. '
@@ -106,7 +111,8 @@ if __name__ == '__main__':
 
     try:
         root = init_resource(args.gpghome, args.key, args.query_server_key,
-                             known_hosts, args.infopage)
+                             known_hosts, args.infopage,
+                             args.user, args.use_alias_fingerprint)
     except Exception as e:
         sys.stderr.write('Could not initialize web server: ' +
                          str(e) + '\n')

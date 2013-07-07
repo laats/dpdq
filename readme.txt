@@ -21,7 +21,7 @@ data with differential privacy risk expenditure accounting.
 
 Main scripts
 
-$ dpdq_qserver.py -h
+dpdq_qserver.py
 
     usage: dpdq_qserver.py [-h] [-k KEY] [-g GPGHOME] [-p QUERY_SERVER_PORT]
                            [-S RISK_SERVER_KEY] [-A RISK_SERVER_ADDRESS]
@@ -29,7 +29,7 @@ $ dpdq_qserver.py -h
                            [-v] [--allow_alias] [--allow_echo]
                            database_url
 
-    Query processing server (version: 0.23). This program allows clients to
+    Query processing server (version: 0.25). This program allows clients to
     request information about datasets in the database it is connected to. As
     these requests potentially carry privacy risk, a risk accountant is queried
     for adherence to the current risk policy before serving the information to the
@@ -74,13 +74,13 @@ $ dpdq_qserver.py -h
                             authentication.
       --allow_echo          Allow echo requests. Useful for debugging clients.
 
-$ dpdq_rserver.py -h
+dpdq_rserver.py
 
     usage: dpdq_rserver.py [-h] [-k KEY] [-P RISK_SERVER_PORT] [-e {threshold}]
                            [-g GPGHOME] [-l LOGFILE] [-m MODULE] [-v]
                            database_url
 
-    Risk Accounting Server (version: 0.23). This program answers requests about
+    Risk Accounting Server (version: 0.25). This program answers requests about
     users' privacy risk history and whether a user is allowed to incur further
     risk according to the current risk policy.
 
@@ -110,13 +110,47 @@ $ dpdq_rserver.py -h
                             (default: "None").
       -v, --version         display version number and exit.
 
-$ dpdq_cli.py -h
+dpdq_web.py
+
+    usage: dpdq_web.py [-h] [-k KEY] [-s QUERY_SERVER_KEY] [-p PORT] [-g GPGHOME]
+                       [-f HOSTSFILE] [-u USER] [--use_alias_fingerprint]
+                       [-i INFOPAGE] [-v] [-d]
+
+    DPDQ web server (version: 0.25). This program starts a Twisted web server that
+    allows connecting clients to request information from and about datasets from
+    a query processing server.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -k KEY, --key KEY     the key identifier for the web-server
+      -s QUERY_SERVER_KEY, --query_server_key QUERY_SERVER_KEY
+                            the key identifier for the query server user (default:
+                            "QueryServer").
+      -p PORT, --port PORT  the webserver port (default: 8082).
+      -g GPGHOME, --gpghome GPGHOME
+                            the directory in which to find key ring files
+                            (default: ".").
+      -f HOSTSFILE, --hostsfile HOSTSFILE
+                            URL pointing to known hosts python dict.
+      -u USER, --user USER  The user to query on behalf on, if not given by
+                            REMOTE_USER (default: Demo).
+      --use_alias_fingerprint
+                            use the alias key fingerprint as identifier when
+                            sending requests.
+      -i INFOPAGE, --infopage INFOPAGE
+                            URL pointing to the DPDQ homepage. Used in the help
+                            dialog to point to more information. If not supplied
+                            http://ptg.ucsd.edu/~staal/dpdq is used.
+      -v, --version         display version number and exit.
+      -d, --debug           display debug info.
+
+dpdq_cli.py
 
     usage: dpdq_cli.py [-h] [-k KEY] [-s QUERY_SERVER_KEY]
                        [-a QUERY_SERVER_ADDRESS] [-p QUERY_SERVER_PORT]
                        [-g GPGHOME] [-u USER] [-f] [-v] [-n] [-d]
 
-    Text based query client (version: 0.23). This program allows requesting
+    Text based query client (version: 0.25). This program allows requesting
     information from and about datasets from a query processing server.
 
     optional arguments:
@@ -143,10 +177,10 @@ $ dpdq_cli.py -h
 
 Supporting scripts
 
-$ dpdq_riskuser.py -h
+dpdq_riskuser.py
 
     usage: dpdq_riskuser.py [-h] [-g GPGHOME] [-t TOTALTHRESHOLD]
-                            [-q QUERYTHRESHOLD] [-u] [-k] [-i] [-v]
+                            [-q QUERYTHRESHOLD] [-u] [-k] [-i] [-v] [-n]
                             database_url user
 
     Add user to the risk accounting data base. Creates database if it does not
@@ -171,8 +205,10 @@ $ dpdq_riskuser.py -h
       -k, --kill            Delete existing user
       -i, --info            Show user information and history
       -v, --version         display version number and exit.
+      -n, --nokey           Use user identifier directly instead of looking up key
+                            fingerprint.
 
-$ dpdq_csv2db.py -h
+dpdq_csv2db.py
 
     usage: dpdq_csv2db.py [-h] [-v] [-n] database_url csvfile
 
@@ -231,13 +267,16 @@ count of the number of class members. Creating equivalence classes can
 be done by projecting the data onto a subset of attributes/dimensions,
 as well as partitioning attribute values by, for example, discretizing.
 
-Given a histogram, one can "reconstitute" data by * expanding
-equivalence class representatives into a number of rows proportional
-with the size of the class * reversing any attribute value partitioning
-by randomly substituting by randomly substituting a value in the
-partition class (e.g., a discretization range). This reconstituted data
-can then be visualized and analyzed using standard tools freely without
-any further privacy risk.
+Given a histogram, one can "reconstitute" data by
+
+-   expanding equivalence class representatives into a number of rows
+    proportional with the size of the class
+-   reversing any attribute value partitioning by randomly substituting
+    by randomly substituting a value in the partition class (e.g., a
+    discretization range).
+
+This reconstituted data can then be visualized and analyzed using
+standard tools freely without any further privacy risk.
 
 [Post histogram query analysis of myocardial infarction (MI) data]
 
@@ -297,8 +336,8 @@ Features
 --------
 
 -   Secure
-    -   "Certificate" (public key encryption) based identification and
-        authentication: no passwords to forget.
+    -   Public key encryption based identification and authentication:
+        no passwords transmitted.
     -   All communication is encrypted.
     -   Allows choice of most suitable database management system.
 
@@ -781,6 +820,124 @@ the output looks similar to this:
 
     count: 13
 
+Using the web server/graphical web user interface
+
+DPDQ also comes with a web-server dpdq_web.py. The web-server acts as a
+client to a query processor, and any connecting client "inherits" the
+web-server's communication rights (see rights).
+
+[The web-server QP client]
+
+Important: as the web server is designed to run behind a reverse proxy
+(see Implementing external user management) that takes care of securing
+external communication, as well as authentication, it does not perform
+any authentication of connecting clients.
+
+It is however possible to use the web-server on a single user machine
+(e.g., a laptop or desktop) without the reverse proxy by using a
+firewall to restrict connections to the web server to originate from the
+local machine. On a linux machine using iptables this can be done for
+port 8082 by:
+
+~~~~ {.bash}
+$ iptables -A INPUT -i lo -p tcp --dport 8082 -j ACCEPT
+$ iptables -A INPUT -p tcp --dport 8082 -j DROP
+~~~~
+
+We can then replace
+
+~~~~ {.bash}
+$ dpdq_cli.py -k Alice -u Demo
+~~~~
+
+with
+
+~~~~ {.bash}
+$ dpdq_web.py -k Alice -u Demo -p 8082
+~~~~
+
+or
+
+~~~~ {.bash}
+$ dpdq_cli.py -k Alice
+~~~~
+
+with
+
+~~~~ {.bash}
+$ dpdq_web.py -k Alice -u Alice --use-alias-fingerprint -p 8082
+~~~~
+
+and point the browser to localhost:8082.
+
+Note that the query processor server must be run with the --allow-alias
+option for the -u option to have any effect. If the query processor does
+not allow aliases to be given, the user associated with the web server's
+key is used (which might be what is wanted in the single user scenario)
+.
+
+The graphical user interface the web server presents provides the same
+functionality as the text client, with the exception of saving the
+results to file.[^1]
+
+[The DPDQ graphical user interface.]
+
+On connecting, the user is presented with a page allowing a selection
+among available query processors. The configuration of these is done by
+supplying the --hostsfile option (see Synopsis).
+
+The graphical user interface (GUI) has the following main components:
+
+-   Status header. Here the currently selected data set and query type
+    are displayed.
+-   A tabbed selection access box in the upper left corner. In this box,
+    the user has access to dataset, query type, attributes, and query
+    type parameters, with a tab for each.
+-   Selection "receiving" areas for attribute selections. Each is
+    activated selecting it (mouse click or finger touch on touch
+    devices), then populated by selecting attribute names from the
+    attribute selection tab. Selecting an attribute name in an area will
+    remove the entry from that area.
+
+    There are two types of receiving areas, the first is the "Output
+    Attributes" area below the tabbed selection box. Query types that
+    use specific attributes will receive these as input. The second type
+    is the "predicate conjunction" box. A predicate is a disjunction
+    (logical or) of possibly negated conjunctions (logical and) of
+    propositions. Each conjunction has its own receiving area. When
+    active, selecting an attribute from the attributes tab inserts an
+    "attribute operator value" proposition into the conjunction box.
+    Selecting the operator part opens a drop-down menu of choices. If
+    the attribute is categorical, selecting the value part will do the
+    same. Numerical and string attributes can be edited in place.
+    Selecting the attribute name part will remove the proposition from
+    the conjunction.
+
+    Initially, two conjunction areas are shown, but any number can be
+    added by selecting the "New conjunction" button. Added conjunction
+    can be deleted again by selecting the "Delete" button inside it.
+    Checking the "Negated" checkbox will negate the meaning of the
+    conjunction. If all conjunction boxes are empty, the predicate is
+    taken to be true for all, meaning that all the data is given to the
+    method implementing the query type.
+
+    The active selection area can be cleared by selecting the "Clear
+    selection".
+-   Risk selection and monitoring area. Here the user can select the
+    differential privacy risk requested for the next query. The box also
+    shows how much the user has expended, together with a progress bar
+    that indicates the accumulated expenditure in relation to a set
+    threshold.
+-   Output box. Responses from the query processor are shown here.
+
+A query is sent to the query processor by selecting the "Run query"
+button.
+
+Tooltip (balloons with text that appear when hovering over particular
+areas) help is activated by default. This can be turned off, and on
+again, by selecting the button with the corresponding text in the upper
+right corner.
+
 Scaling
 
 The basic system has five compontents:
@@ -840,6 +997,94 @@ maintained on a per user-base in the Risk accountants risk database, and
 the alias field is used to communicate with the QP. Any mechanism can be
 used to propagate user query rights to DPDQ by inserting user
 credentials into the risk databases used.
+
+To support external user management, DPDQ provides a web-server
+dpdq_web.py (see Synopsis and use description. This web server does not
+do any user authentication, nor does it support encrypted communication
+with its clients. This is because it is designed to be used behind a
+reverse proxy that takes care of these things. The user identity to use
+is read from the REMOTE_USER header variable.
+
+A simple example setup using dpdq_web.py
+
+A simple setup using apache2 mod_proxy and mod_rewrite as well as basic
+authentication is described in the following. All processes are running
+on the same machine.
+
+[A simple reverse proxy setup]
+
+Assume that a user dpdq on a linux/unix type system with world readable
+home directory ~dpdq being /home/dpdq has directories
+
+    - `~dpdq/r` -- containing risk accountant server key files and an
+      sqlite risk database `risk.db`
+    - `~dpdq/q` -- containing query processor server key files and an
+      sqlite database with datasets `warehouse.db`
+    - `~dpdq/c` -- containing client key files
+    - `~dpdq/store` -- for storing information not accessible in the
+      web tree.
+
+All of these directories should have restricted permissions.
+
+Furthermore, we assume that DPDQ is installed, and that we are running
+an apache2 web server on the machine.
+
+In order to require basic authentication (or adapt for LDAP if active
+directory is wanted), we make sure that there exists a file
+~dpdq/www/.htaccess containing
+
+    AuthType Basic
+    AuthName "Password Required"
+    AuthUserFile "/home/dpdq/store/.htpasswd"
+    Require valid-user
+
+The file /home/dpdq/store/.htpasswd contains usernames and password
+pairs for users authorized, and we assume that the web server can read
+the file. If this is not the case,
+
+    $ sudo chgrp www-data ~dpdq/store
+    $ chmod g+xr ~dpdq/store
+    $ chmod o-rwx ~dpdq/store
+
+could be used.
+
+We now restrict connections to the web server to originate from the
+local machine by:
+
+~~~~ {.bash}
+$ iptables -A INPUT -i lo -p tcp --dport 8082 -j ACCEPT
+$ iptables -A INPUT -p tcp --dport 8082 -j DROP
+~~~~
+
+Then if our machine has address ptg.ucsd.edu (and assuming apache2 has
+been configured to allow rewrite from .htaccess files) we add the two
+following lines to ~dpdq/www/.htaccess:
+
+    RewriteEngine On
+    RewriteBase /
+
+    RewriteRule ^(.*)$ http://ptg.ucsd.edu:8082/$1 [P,L]
+    RewriteRule ^$ http://ptg.ucsd.edu:8082/ [P,L]
+
+What remains is to add a user (in this case 'Demo'), and start the
+servers. This can be done by:
+
+    # generate a user 'Demo'
+    $ dpdq_riskuser.py -n sqlite:////home/dpdq/r/risk.db Demo
+    $ htpasswd ~dpdq/store/.htpasswd Demo
+
+    # start servers
+    $ (cd q; dpdq_qserver.py sqlite:///warehouse.db &> out.log &)
+    $ (cd r; dpdq_rserver.py sqlite:///risk.db &> out.log &)
+    $ (cd c; dpdq_web.py  &> out.log &)
+
+The above can be adapted to be more secure by securing communication
+with the apache 2 web server (e.g., by using ssl), and using a different
+type of authentication. Furthermore, the setup allows running each
+component on a separate machine, possibly with a firewall between each
+element in the communication chain.
+
+A simple setup using shellinabox and dpdq_cli.py
 
 A simple setup that allows web access without any application
 programming is combining shellinabox with apache cgi. In this setup,
@@ -1413,3 +1658,5 @@ Acknowledgements
 
 This implementation was supported by NIH Roadmap for Medical Research
 grant U54 HL108460 and NIH grant R01 LM07273.
+
+[^1]: Allowing this would violate the "sandbox" security principle.

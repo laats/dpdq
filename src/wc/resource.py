@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Fri Jul  5 22:37:38 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jul  7 10:12:07 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -46,6 +46,7 @@ import gnupg
 from dpdq.wc.wproto import make_sender, State
 from dpdq.messages import *    # needed for the QPRequest,QPResponse etc.
 from dpdq import Version
+from dpdq.gpgutils import findfp
 from texttable import Texttable
 
 import pkgutil as pku
@@ -128,10 +129,19 @@ class kmap(dict):
         return 'data-' + str(key)
 
 
-def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
+def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
+                  alias='Demo', usefp = False):
 
     gpg = gnupg.GPG(gnupghome=gpghome)
     state = State(gpg, key_id, qp_id)
+
+    aliasid = alias
+    if usefp:
+        aliasfp = findfp(alias, gpg, private=True)
+        if aliasfp == None:
+            raise Exception('Could not find key for: ' + alias)
+        aliasid = aliasfp
+
 
     # load template
     env = Environment(loader=PackageLoader('dpdq', 'wc/templates'),
@@ -264,7 +274,7 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
 
 
         def handle_risk(self, request):
-            return True, QPRequest(QP_RISK, 'Demo')
+            return True, QPRequest(QP_RISK, aliasid)
 
 
 
@@ -353,7 +363,7 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
                 self.port = port
                 ### protocol code
                 # create QPRequest 
-                qp_r = QPRequest(QP_META, alias=web_request.getUser() or 'Demo')
+                qp_r = QPRequest(QP_META, alias=web_request.getUser() or aliasid)
 
 
 
@@ -380,7 +390,7 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
                         if not pdict.has_key(k):
                             pdict[k] = parms[k]['default']
 
-                    qp_r = QPRequest(QP_INFO, alias=web_request.getUser() or 'Demo',
+                    qp_r = QPRequest(QP_INFO, alias=web_request.getUser() or aliasid,
                                      eps=rd['eps'],
                                      params=((rd['dataset'], rd['predicate'],
                                               rd['attributes']),
@@ -439,7 +449,7 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage):
                 #print 'procs', procs
                 s = template.render(datasets = sorted(dsets),
                                     processors = sorted(procs),
-                                    user=web_request.getUser() or 'Demo',
+                                    user=web_request.getUser() or alias,
                                     homepage=homepage,
                                     version=Version)
                 web_request.write(s.encode('ascii'))

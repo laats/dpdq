@@ -7,7 +7,7 @@
 #               /tmp/dpdq/[cqr]
 # Author:       Staal Vinterbo
 # Created:      Fri May 10 16:44:21 2013
-# Modified:     Sat Jul  6 00:33:28 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Jul  7 14:16:42 2013 (Staal Vinterbo) staal@mats
 # Language:     Shell-script
 # Package:      N/A
 # Status:       Experimental
@@ -147,16 +147,6 @@ echo ''
 echo 'To enjoy the web interface for user Demo, point browser to:'
 echo '  http://localhost:8082'
 echo ''
-#echo 'Giving servers a few seconds to initialize before starting text client...'
-#sleep 3
-
-
-# if [ "$#" -ge 1 ] &&  [ -f $1 ]
-#then
-#    cat $1 | dpdq_cli.py -k Alice -g /tmp/dpdq/c -f
-#else
-#    dpdq_cli.py -k Alice -g /tmp/dpdq/c
-#fi
 
 echo 'If you ran this script using source ("source demo.sh") then'
 echo 'you can start the text client by issuing:'
