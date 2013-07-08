@@ -1,6 +1,6 @@
 % DPDQ: Differentially Private Data Queries
 % Staal A. Vinterbo
-% Time-stamp: <2013-07-08 10:13:32 staal>
+% Time-stamp: <2013-07-08 11:22:32 staal>
 
 <!-- # DPDQ: Differentially Private Data Queries -->
 
@@ -1115,8 +1115,8 @@ $ chmod o-rwx ~dpdq/store
 
 could be used.
 
-We now restrict connections to the web server to originate from
-the local machine by:
+We now restrict connections to the web server (assuming this server is
+listening to port 8082) to originate from the local machine by:
 
 ~~~~ {.bash}
 $ iptables -A INPUT -i lo -p tcp --dport 8082 -j ACCEPT
@@ -1144,9 +1144,9 @@ $ dpdq_riskuser.py -n sqlite:////home/dpdq/r/risk.db Demo
 $ htpasswd ~dpdq/store/.htpasswd Demo
 
 # start servers
-$ (cd q; dpdq_qserver.py sqlite:///warehouse.db &> out.log &)
+$ (cd q; dpdq_qserver.py --allow_alias sqlite:///warehouse.db &> out.log &)
 $ (cd r; dpdq_rserver.py sqlite:///risk.db &> out.log &)
-$ (cd c; dpdq_web.py  &> out.log &)
+$ (cd c; dpdq_web.py -p 8082 &> out.log &)
 ~~~~
 
 The above can be adapted to be more secure by securing communication
