@@ -1046,8 +1046,8 @@ the file. If this is not the case,
 
 could be used.
 
-We now restrict connections to the web server to originate from the
-local machine by:
+We now restrict connections to the web server (assuming this server is
+listening to port 8082) to originate from the local machine by:
 
 ~~~~ {.bash}
 $ iptables -A INPUT -i lo -p tcp --dport 8082 -j ACCEPT
@@ -1064,6 +1064,18 @@ following lines to ~dpdq/www/.htaccess:
     RewriteRule ^(.*)$ http://ptg.ucsd.edu:8082/$1 [P,L]
     RewriteRule ^$ http://ptg.ucsd.edu:8082/ [P,L]
 
+The web-server can give the user a choice of query processors to connect
+to. These choices are given as a URL that points to what amounts to the
+text definition of a python dictionary keyed on address:port strings
+with display names as values. For our example, this file qpservers.txt
+contains:
+
+~~~~ {.python}
+{
+   'localhost:8123' : 'Demo'
+}
+~~~~
+
 What remains is to add a user (in this case 'Demo'), and start the
 servers. This can be done by:
 
@@ -1072,9 +1084,9 @@ servers. This can be done by:
     $ htpasswd ~dpdq/store/.htpasswd Demo
 
     # start servers
-    $ (cd q; dpdq_qserver.py sqlite:///warehouse.db &> out.log &)
+    $ (cd q; dpdq_qserver.py --allow_alias sqlite:///warehouse.db &> out.log &)
     $ (cd r; dpdq_rserver.py sqlite:///risk.db &> out.log &)
-    $ (cd c; dpdq_web.py  &> out.log &)
+    $ (cd c; dpdq_web.py -f file:qpservers.txt -p 8082 &> out.log &)
 
 The above can be adapted to be more secure by securing communication
 with the apache 2 web server (e.g., by using ssl), and using a different

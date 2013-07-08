@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Sun Jul  7 14:13:09 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jul  8 14:31:48 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -95,7 +95,8 @@ if __name__ == '__main__':
 
     if args.hostsfile:
         try:
-            known_hosts = literal_eval(urllib2.urlopen(args.hostfile))
+            s = '\n'.join(urllib2.urlopen(args.hostsfile))
+            known_hosts = literal_eval(s)
         except Exception as e:
             sys.stderr.write('Could not initialize known_hosts: ' +
                              str(e) + '\n')
