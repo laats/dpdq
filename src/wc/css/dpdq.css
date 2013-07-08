@@ -116,6 +116,11 @@ li.pickable {
     font-size: 0.75em !important;
 }
 
+.link {
+    font-size: 80%;
+    text-decoration: none;
+}
+
 /* named elements */
 
 #layout {

@@ -382,10 +382,8 @@ Features
 
     -   Centralized management is possible through the use of
         distributed file systems and networked databases.
-    -   Adaptation to any user management and access control system is
-        possible by implementing client access control, e.g., by
-        implementing the client in a web-server that implements the user
-        management system.
+    -   Adaptation to any access control system is possible by using the
+        DPDQ web-server behind a reverse proxy.
 
 -   Open source Allows community involvement as well as site-specific
     customization
@@ -877,8 +875,8 @@ key is used (which might be what is wanted in the single user scenario)
 .
 
 The graphical user interface the web server presents provides the same
-functionality as the text client, with the exception of saving the
-results to file.[^1]
+functionality as the text client, including downloading data created
+from histogram queries.
 
 [The DPDQ graphical user interface.]
 
@@ -1658,5 +1656,3 @@ Acknowledgements
 
 This implementation was supported by NIH Roadmap for Medical Research
 grant U54 HL108460 and NIH grant R01 LM07273.
-
-[^1]: Allowing this would violate the "sandbox" security principle.

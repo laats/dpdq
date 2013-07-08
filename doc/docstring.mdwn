@@ -1,6 +1,6 @@
 % DPDQ: Differentially Private Data Queries
 % Staal A. Vinterbo
-% Time-stamp: <2013-07-07 14:36:44 staal>
+% Time-stamp: <2013-07-08 10:13:32 staal>
 
 <!-- # DPDQ: Differentially Private Data Queries -->
 
@@ -408,9 +408,8 @@ shared.
           accounting server.
     - Centralized management is possible through the use of distributed file
       systems and networked databases.
-    - Adaptation to any user management and access control system is
-      possible by implementing client access control, e.g., by implementing the
-      client in a web-server that implements the user management system.
+    - Adaptation to any access control system is
+      possible by using the _DPDQ_ web-server behind a reverse proxy.
 
 * **Open source**
     Allows community involvement as well as site-specific customization
@@ -932,8 +931,8 @@ associated with the web server's key is used (which might be what is
 wanted in the single user scenario) .
 
 The graphical user interface the web server presents provides the same
-functionality as the text client, with the exception of saving the results to
-file.^[Allowing this would violate the "sandbox" security principle.]
+functionality as the text client, including downloading data created from
+histogram queries. 
 
 ![The DPDQ graphical user interface.](doc/web.png)
 

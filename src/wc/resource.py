@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Sun Jul  7 10:12:07 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jul  8 10:00:50 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -37,20 +37,30 @@ import math
 from pprint import pformat
 from collections import defaultdict
 
+from zope.interface import Interface, Attribute, implements
+from twisted.python.components import registerAdapter
+from twisted.web.server import Session
 from twisted.web import resource, server
 from twisted.internet import reactor
 from twisted.web.resource import NoResource
-from jinja2 import Environment, PackageLoader
 
+from jinja2 import Environment, PackageLoader
+from texttable import Texttable
 import gnupg
+
 from dpdq.wc.wproto import make_sender, State
 from dpdq.messages import *    # needed for the QPRequest,QPResponse etc.
 from dpdq import Version
 from dpdq.gpgutils import findfp
-from texttable import Texttable
+
 
 import pkgutil as pku
 from mimetypes import guess_type
+
+import cStringIO
+from random import uniform
+from ast import literal_eval
+import csv
 
 # like defaultdict(lambda : None) except no storing of missing keys
 class tdict(dict):
@@ -115,6 +125,44 @@ def htmlformat(r, qp_r):
         return '<pre>\n' + str(r.response) + '\n</pre>'    
         
 
+
+def format_text(qp_response):
+    '''format response into text
+
+       in particular create dataset from histogram.'''
+    def trans(s):
+        if type(s) == str:
+            if s[0] == '[' and s[-1] == ')':
+                a,b = literal_eval('(' + s[1:])
+                return uniform(a, b)
+        return s
+    
+    def tlist(res):
+        l = [res['col_names']]
+        for tup,mult in res['histogram'].items():
+            for i in range(mult):
+                l.append(map(trans, tup))
+        return l
+
+
+    r = qp_response
+    if r.status != QP_OK:
+        return str(r.response)
+
+    if r.response.has_key('histogram'):
+        output = cStringIO.StringIO()
+        writer = csv.writer(output)
+        writer.writerows(tlist(r.response))
+        s = output.getvalue()
+        output.close()
+        return s
+
+    return str(r.response)
+
+        
+        
+
+
 def resp_update(r, qp_request):
     if r.status != QP_OK:
         return {}
@@ -127,6 +175,14 @@ def resp_update(r, qp_request):
 class kmap(dict):
     def __missing__(self, key):
         return 'data-' + str(key)
+
+class IInfoQ(Interface):
+    value = Attribute('The raw QP info query return value.')
+    
+class InfoQ(object):
+    implements(IInfoQ)
+    def __init__(self, session):
+        self.value = None
 
 
 def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
@@ -153,12 +209,14 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
     stemplate = env.get_template('str.html')
 
     class getter:
+        '''Takes care of GET requests'''
         def __init__(self, meta):
             self.meta = meta
             self.table = defaultdict(lambda : (lambda x : false, NoResource()),
                                      { 'd' : self.handle_descriptor,
                                        'a' : self.handle_attributes,
                                        'p' : self.handle_parameters,
+                                       'v' : self.handle_value,
                                        'r' : self.handle_risk })
 
             self.kmap = kmap({
@@ -272,6 +330,14 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
                                      value='Not set.', olist=opl)
             return False, unicode(s)
 
+        def handle_value(self, request):
+            session = request.getSession()
+            store = IInfoQ(session)
+            request.setHeader("content-type", "text/plain")
+            if store.value != None:
+                return False, unicode(format_text(store.value['r']))
+            else:
+                return False, unicode('Sorry, no query result available.')
 
         def handle_risk(self, request):
             return True, QPRequest(QP_RISK, aliasid)
@@ -462,6 +528,13 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
                         'status' : r.status,
                         'html' : htmlformat(r, qp_request),
                     }
+                    if qp_request.type == QP_INFO:
+                        session = web_request.getSession()
+                        store = IInfoQ(session)
+                        store.value = {
+                            'qp_r' : qp_request,
+                            'r'    : r
+                        }
                 except:
                     resp = {
                         'status' : 500,
@@ -471,6 +544,8 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
 
                 resp.update(resp_update(r, qp_request))
                 #print 'response: ', str(resp)
+
+                
 
                 web_request.setHeader("content-type", "application/json")
                 web_request.write(json.dumps(resp))
@@ -488,6 +563,7 @@ def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
             web_request.write(json.dumps(resp))
             web_request.finish()
 
+    registerAdapter(InfoQ, Session, IInfoQ)
     return MyResource()
 
 #### globals

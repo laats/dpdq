@@ -5,7 +5,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 22:20:31 2013
-# Modified:     Tue Jun 25 10:17:36 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Jul  8 08:52:02 2013 (Staal Vinterbo) staal@mats
 # Language:     BSDmakefile
 # Package:      N/A
 # Status:       Experimental
@@ -35,7 +35,7 @@ SCRIPTDIR = ./scripts
 DOCDIR = ./doc
 
 
-PSRC = $(SRCDIR)/*.py $(SRCDIR)/ra/*.py $(SRCDIR)/cl/*.py \
+PSRC = $(SRCDIR)/docstring.py $(SRCDIR)/*.py $(SRCDIR)/ra/*.py $(SRCDIR)/cl/*.py \
 	$(SRCDIR)/qp/*.py $(SCRIPTDIR)/*.py setup.py
 
 PINSTALL = pip install
