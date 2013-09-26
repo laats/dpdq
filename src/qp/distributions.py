@@ -6,7 +6,7 @@
 # Description:  Statistical discribution
 # Author:       Staal Vinterbo
 # Created:      Wed May 22 08:03:03 2013
-# Modified:     Wed Jun 12 23:21:24 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu Sep 26 13:56:28 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -33,6 +33,7 @@ __all__ = ['rlaplace', 'plaplace']
 
 from random import uniform
 from math import log, exp
+from numpy.random import binomial
 
 def rlaplace(scale, location = 0, r = 0):
     '''genrate a random deviate from Laplace(location, scale)'''
@@ -48,3 +49,5 @@ def plaplace(q, location = 0, scale = 1):
     zedd = float(q - location)/scale
     return  0.5 * exp(zedd) if q < location else 1 - 0.5 * exp(-zedd)
 
+def rbinom(n, p):
+    return binomial(n, p)

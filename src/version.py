@@ -6,7 +6,7 @@
 # Description:  The version number for dpdq
 # Author:       Staal Vinterbo
 # Created:      Wed Jun 12 23:24:53 2013
-# Modified:     Mon Jul  8 10:09:34 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Sep 16 09:26:13 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -29,4 +29,4 @@
 #
 ################################################################################
 
-Version = '0.26'
+Version = '0.27'

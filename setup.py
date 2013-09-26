@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 21:41:31 2013
-# Modified:     Fri Jul  5 11:28:10 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu Sep 26 13:43:59 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -57,6 +57,7 @@ setup(name=pname,
                           'sqlalchemy >= 0.8.0',
                           'twisted >= 12.0.0',
                           'texttable >= 0.8.1',
+                          'numpy >= 1.6.1',
                           'jinja2 >= 2.7']
       )
 

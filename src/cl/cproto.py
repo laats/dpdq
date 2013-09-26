@@ -6,7 +6,7 @@
 # Description:  dpdq client protocol
 # Author:       Staal Vinterbo
 # Created:      Tue Jun 25 10:21:50 2013
-# Modified:     Tue Jun 25 15:03:54 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Sep 16 16:15:40 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -280,7 +280,7 @@ class Handler:
     def handle_info(self, r):
         response = r.response
         if type(response) == dict:
-            if not self.cli.type == 'histogram':
+            if not self.cli.type == 'Histogram':
                 for k,v in sorted(response.items()):
                     self.print_(str(k) + ": " + str(v) + '\n')
             else:

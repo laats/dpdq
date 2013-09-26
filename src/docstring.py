@@ -456,6 +456,7 @@ on the availability of
    -  python-gnupg version 0.3.3 or higher
    -  sqlalchemy version 0.8.0 or higher
    -  texttable version 0.8.1 or higher
+   -  numpy version 1.6.1 or higher
    -  jinja2 version 2.7 or higher
 
 The `SQLite <http://www.sqlite.org>`__ SQL database engine is

@@ -6,7 +6,7 @@
 # Description:  Differentially private truncated histograms
 # Author:       Staal Vinterbo
 # Created:      Wed May 22 08:01:57 2013
-# Modified:     Mon Jun 10 21:12:12 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu Sep 26 13:59:59 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -17,7 +17,7 @@
 
 __all__ = ['discretize_data', 'noisy_histogram', 'max_size']
 
-from distributions import rlaplace, plaplace
+from distributions import rlaplace, plaplace, rbinom
 from operator import mul
 from sampler import *
 from itertools import islice
@@ -84,6 +84,7 @@ def noisy_histogram(values, discdata, A, eps = 1, tau = None):
     print 'sizes', sizes
     #print 'values', values
     N = reduce(mul, sizes) # size of full histogram
+    print 'N: ', N
         
     datad = {}
     for row in map(tuple, discdata):
@@ -94,6 +95,7 @@ def noisy_histogram(values, discdata, A, eps = 1, tau = None):
 
     exclude = set(datad.keys())
     n = len(exclude)
+    print 'n: ', n 
     if tau == None:
         tau = A * log(1 if n == 0 else n) / eps 
     print 'tau', tau
@@ -107,8 +109,11 @@ def noisy_histogram(values, discdata, A, eps = 1, tau = None):
     #print ' p + plb ', p + plb
     
     assert(p < 1)
-    nzero = int(round(p * (N - n))) # number of extra to sample
-    print 'extra samples P(L(0,2/eps) > tau)*(N - n): ', nzero
+    print 'N-n:', N-n
+    nzero = 0
+    if N - n > 0:
+        nzero = rbinom(N-n, p) # expected to be int(round(p * (N - n))) 
+    print 'extra samples : ', nzero, 'expected:', int(round(p * (N - n)))
 
     if nzero + n > max_size:
         raise ValueError('Histogram too large.')

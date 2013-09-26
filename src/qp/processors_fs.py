@@ -18,7 +18,7 @@
 #                         'name', 'explanation', 'parameters'
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 18:51:43 2013
-# Modified:     Mon Jun 24 10:22:07 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Sep 16 09:38:44 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -59,13 +59,13 @@ def simple_count(eps, parms, result):
     out = int(round(rlaplace(2.0/eps, count)))
     return {'count' : out }
 
-simple_count_meta = {'name' : 'simple_count',
+simple_count_meta = {'name' : 'Simple_Count',
                      'description' : 'Produces a noisy count of matching rows'
                                      ' by adding a Laplace(2/eps, 0) distributed random deviate and '
                                      'rounding the result to the nearest integer.',
                      'parameters' : {} }
 proc_simple_count = {
-    'name': 'simple_count',
+    'name': 'Simple_Count',
     'f' : simple_count,
     'meta' : simple_count_meta
     }
@@ -75,7 +75,7 @@ proc_simple_count = {
 ######### count with user prefereces
 
 user_pref_count_meta = {
-    'name' : 'user_pref_count',
+    'name' : 'Tuned_Count',
     'description' : 'Produces a perturbed count of matching rows by sampling the perturbation'
                     ' according to a probability mass derived from a utility of a response centered on the real count.'
                     ' The utility can be assymetric around the real count,'
@@ -178,7 +178,7 @@ def user_pref_count(eps, parms, result):
     return { 'count' : i}
 
 proc_user_pref_count = {
-    'name': 'user_pref_count',
+    'name': 'Tuned_Count',
     'f' : user_pref_count,
     'meta' : user_pref_count_meta
     }
@@ -187,7 +187,7 @@ proc_user_pref_count = {
     
 ############# Histogram ###################
 histogram_meta = {
-    'name' : 'histogram',
+    'name' : 'Histogram',
     'description' : 'Produces a perturbed histogram truncated by A * log(n)/eps.',
     'parameters'  : {
         'A' : { 'type' : 2,
@@ -227,7 +227,7 @@ def histogram(eps, parms, result):
 
     
 proc_histogram = {
-    'name': 'user_pref_count',
+    'name': 'Histogram',
     'f' : histogram,
     'meta' : histogram_meta
     }
@@ -237,6 +237,6 @@ proc_histogram = {
     
                     
 
-processors = {'simple_count' : proc_simple_count,
-              'user_pref_count' : proc_user_pref_count,
-              'histogram' : proc_histogram}
+processors = {'Simple_Count' : proc_simple_count,
+              'Tuned_Count' : proc_user_pref_count,
+              'Histogram' : proc_histogram}

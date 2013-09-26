@@ -6,7 +6,7 @@
 # Description:  create a data base with a data set given in a csv file.
 # Author:       Staal Vinterbo
 # Created:      Tue May  7 19:37:13 2013
-# Modified:     Thu Jun 13 09:28:44 2013 (Staal Vinterbo) staal@mats
+# Modified:     Mon Sep 16 09:33:09 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -205,10 +205,10 @@ if __name__ == "__main__":
     if vtpls: conn.execute(vtable.insert(), vtpls)
     if btpls: conn.execute(btable.insert(), btpls)
     conn.execute(ptable.insert(), [{'set' : setname, 'type' : x} for
-                                   x in ['simple_count',
-                                         'histogram',
-                                         'user_pref_count',
-                                         'logistic_regression']])
+                                   x in ['Simple_Count',
+                                         'Histogram',
+                                         'Tuned_Count',
+                                         'Logistic_Regression']])
 
     print 'inserting data...'
     conn.execute(dtable.insert(), data)

@@ -1,6 +1,6 @@
 % DPDQ: Differentially Private Data Queries
 % Staal A. Vinterbo
-% Time-stamp: <2013-07-08 14:31:33 staal>
+% Time-stamp: <2013-09-26 13:45:24 staal>
 
 <!-- # DPDQ: Differentially Private Data Queries -->
 
@@ -435,6 +435,7 @@ on the availability of
   	 - python-gnupg version 0.3.3 or higher
    	 - sqlalchemy version 0.8.0 or higher
 	 - texttable version 0.8.1 or higher
+	 - numpy version 1.6.1 or higher
 	 - jinja2 version 2.7 or higher
 
 The [SQLite](http://www.sqlite.org) SQL database engine is
