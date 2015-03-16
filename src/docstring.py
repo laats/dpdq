@@ -6,16 +6,20 @@
 **Author**
     Staal A. Vinterbo (sav@ucsd.edu)
 **Copyright**
-    2013 Staal A. Vinterbo
+    2013-3015 Staal A. Vinterbo
 **Availability**
     GPL http://www.gnu.org/copyleft/gpl.html
-**Homepage**
-    Homepage: http://ptg.ucsd.edu/~staal/dpdq
 **Download**
-    Download installable Python package
-    `here <http://ptg.ucsd.edu/~staal/dpdq/dist>`__.
-**Source Code**
-    Git clone URL: ``git://ptg.ucsd.edu/dpdq.git``
+    Download installable Python package `here <./dist/>`__.
+
+.. raw:: html
+
+   <!-- **Source Code** -->
+
+.. raw:: html
+
+   <!--  ~ Git clone URL: `git://ptg.ucsd.edu/dpdq.git` -->
+
 **Printer Friendly PDF version of this document:**
     `here <dpdq.pdf>`__.
 
@@ -313,6 +317,7 @@ standard tools freely without any further privacy risk.
    data
 
    Post histogram query analysis of myocardial infarction (MI) data
+
 It is easy to add new query types, as well as risk accounting policies,
 as run-time loadable modules. For example, the complete code needed for
 a loadable risk policy that implements the current default policy is
@@ -335,6 +340,7 @@ System Overview
    :alt: The interactions in the DPDQ system
 
    The interactions in the DPDQ system
+
 The client:
 
 a. allows the user to formulate a query, typically a statistic or a
@@ -472,8 +478,8 @@ Installation
 ^^^^^^^^^^^^
 
 The *DPDQ* distribution is available from `the download
-page <http://ptg.ucsd.edu/~staal/dpdq/dist>`__, and can be installed by
-any of the standard ways of installing python packages. An example is:
+page <./dist/>`__, and can be installed by any of the standard ways of
+installing python packages. An example is:
 
 ::
 
@@ -866,31 +872,25 @@ The available commands are:
 
 ``help [<command>]``
     get help. If a command is given, help is given on that command.
-``dataset DATASET``
-    select the dataset DATASET to query.
-``columns COLUMN [COLUMN]*``
+    ``dataset DATASET``
+    select the dataset DATASET to query. ``columns COLUMN [COLUMN]*``
     set columns (data attributes) you are interested in. If left unset
-    all columns are used.
-``predicate PREDICATE``
+    all columns are used. ``predicate PREDICATE``
     input selection predicate. A predicate is a disjunction of a
     possibly negated conjunction of terms. Example:
     ``gender == male and age > 30 or not gender == female and age > 30``.
     Note that categorical values should not be quoted. An empty
-    predicate selects all.
-``type TYPE``
+    predicate selects all. ``type TYPE``
     sets query type. A query type is the information item to be computed
     from the rows in the dataset that match the predicate.
-``value PARAMETER VALUE``
-    set parameter for query type.
-``run [OUTFILE]``
+    ``value PARAMETER VALUE``
+    set parameter for query type. ``run [OUTFILE]``
     send query to query server. If OUTFILE is given, the computed result
-    is copied to the file.
-``list datasets | types``
+    is copied to the file. ``list datasets | types``
     list available datasets or query types.
-``show settings | dataset DATASET | type TYPE | risk``
+    ``show settings | dataset DATASET | type TYPE | risk``
     show settings or info about dataset, query type, or user risk
-    levels.
-``quit``
+    levels. ``quit``
     quit the client.
 
 The client can also read a list of commands from standard input if given
@@ -928,6 +928,7 @@ the web-server's communication rights (see `rights <#rights>`__).
    :alt: The web-server QP client
 
    The web-server QP client
+
 **Important:** as the web server is designed to run behind a reverse
 proxy (see `Implementing external user
 management <#implementing-external-user-management>`__) that takes care
@@ -986,6 +987,7 @@ from histogram queries.
    :alt: The DPDQ graphical user interface.
 
    The DPDQ graphical user interface.
+
 On connecting, the user is presented with a page allowing a selection
 among available query processors. The configuration of these is done by
 supplying the ``--hostsfile`` option (see `Synopsis <#main-scripts>`__).
@@ -1070,6 +1072,7 @@ instances at the same time. This scenario can be seen here:
    :alt: A larger deployment scenario
 
    A larger deployment scenario
+
 Particularly useful in this context is "deamonizing" a server that needs
 to perform significant computations. Here, a daemon process receives an
 incoming request and starts a new server for that connection. This new
@@ -1128,6 +1131,7 @@ following. All processes are running on the same machine.
    :alt: A simple reverse proxy setup
 
    A simple reverse proxy setup
+
 Assume that a user ``dpdq`` on a linux/unix type system with world
 readable home directory ``~dpdq`` being ``/home/dpdq`` has directories
 
@@ -1341,7 +1345,7 @@ as:
 
     A randomized algorithm :math:`A` is :math:`\epsilon`-differentially
     private if for any measurable set of outputs :math:`S`,
-    :math:`P\left( A ( D ) \in S \right)    \le    e^{\epsilon}    P\left( A( D' ) \in S \right),`
+    :math:`P\left( A ( D ) \in S \right)  \le  e^{\epsilon}  P\left( A( D' ) \in S \right),`
     where :math:`D, D'` are any two databases of :math:`n` records that
     share :math:`n-1` records in common. The probability is taken over
     the randomness in :math:`A`.
@@ -1402,26 +1406,17 @@ Protocol <http://en.wikipedia.org/wiki/Transmission_Control_Protocol>`__\ (TCP).
 In the following format specifications
 
 ``tuple(a,b,...,c)``
-    means a python tuple containing ``a,b,...,c``
-``tuple(t)``
-    means a python tuple with elements of type ``t``
-``dict(a,b)``
+    means a python tuple containing ``a,b,...,c`` ``tuple(t)``
+    means a python tuple with elements of type ``t`` ``dict(a,b)``
     means the python dictionary with key type ``a`` and value type
-    ``b``.
-``{ ... }``
+    ``b``. ``{ ... }``
     means an explicitly given python dictionary that must have exactly
-    the keys listed.
-``|``
-    separates alternatives
-``list(a)``
-    means a non-empty python list of ``a`` elements
-``empty_list``
-    means an empty python list
-``string``
-    is a python string
-``float``
-    is a python float
-``number``
+    the keys listed. ``|``
+    separates alternatives ``list(a)``
+    means a non-empty python list of ``a`` elements ``empty_list``
+    means an empty python list ``string``
+    is a python string ``float``
+    is a python float ``number``
     is either a ``float`` or an integer
 
 Client -- Query processing server
@@ -1616,7 +1611,7 @@ The ``check`` query can be formulated as
 | ``epsilon`` is not more than the user's per query threshold
 | and
 | the user's current total risk expended + epsilon is not more total
-risk allowed
+  risk allowed
 | otherwise
 | status equals 0
 
@@ -1703,14 +1698,12 @@ dict values as follows:
 where
 
 ``name``
-    is the same as the key for this dict in ``processors``.
-``f``
+    is the same as the key for this dict in ``processors``. ``f``
     is a function ``f(eps, parms, meta, result)`` where
 
     ``eps``
         is the `differential privacy <#differential-privacy>`__ risk
-        :math:`\epsilon` allowed
-    ``parms``
+        :math:`\epsilon` allowed ``parms``
         is a list of ``(parameter_name, value)`` tuples as given in the
         `query <#query>`__. If the query type has a field
         ``query_edit``, the ``parms`` list gets a
@@ -1722,8 +1715,7 @@ where
 
     ``meta``
         is the metadata for the queried dataset as described in the
-        `metadata specification <#metadata>`__
-    ``result``
+        `metadata specification <#metadata>`__ ``result``
         is an iterator for data row tuples extracted from the dataset.
         The row entries correspond to the ``attributes`` in the
         `query <#query>`__ and all satisfy the query predicate
@@ -1733,8 +1725,7 @@ where
 
     ``predicate``
         is the ``predicate`` part of the query sent (see
-        `Query <#query>`__)
-    ``attributes``
+        `Query <#query>`__) ``attributes``
         is the ``attribute`` part of the query sent (see
         `Query <#query>`__)
 

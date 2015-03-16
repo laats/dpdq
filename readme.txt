@@ -1,22 +1,22 @@
-Author
+AUTHOR
     Staal A. Vinterbo (sav@ucsd.edu)
-Copyright
-    2013 Staal A. Vinterbo
-Availability
+
+COPYRIGHT
+    2013-3015 Staal A. Vinterbo
+
+AVAILABILITY
     GPL http://www.gnu.org/copyleft/gpl.html
-Homepage
-    Homepage: http://ptg.ucsd.edu/~staal/dpdq
-Download
+
+DOWNLOAD
     Download installable Python package here.
-Source Code
-    Git clone URL: git://ptg.ucsd.edu/dpdq.git
-Printer Friendly PDF version of this document:
+
+PRINTER FRIENDLY PDF VERSION OF THIS DOCUMENT:
     here.
 
-Synopsis
---------
 
-DPDQ is a client/server approach to secure and interactive querying of
+Synopsis
+
+_DPDQ_ is a client/server approach to secure and interactive querying of
 data with differential privacy risk expenditure accounting.
 
 Main scripts
@@ -229,8 +229,8 @@ dpdq_csv2db.py
       -n, --no_categorize  Don't interpret integer columns with a full complement
                            of values in range(x) where x < 5 as categorical
 
+
 Executive summary
------------------
 
 Rationale
 
@@ -249,7 +249,7 @@ from a dataset. Risk measured by differential privacy can be tracked
 over time, different datasets, and information computed by different
 methods, allowing for implementation of risk accounting policies.
 
-DPDQ aims at being a lightweight, scalable, and easily deployable
+_DPDQ_ aims at being a lightweight, scalable, and easily deployable
 networked system for making information in datasets available in a
 secure and differentially private manner, as well as serve as a platform
 for a growing number of differentially private methods. A key feature is
@@ -289,11 +289,11 @@ differentially private logistic regression.
 
 System Overview
 
-DPDQ consists of three main parts:
+_DPDQ_ consists of three main parts:
 
-1.  a client that sends a query to a query processing server,
-2.  a query processing server, and
-3.  a risk accountant server.
+1.  a _client_ that sends a query to a query processing server,
+2.  a _query processing server_, and
+3.  a _risk accountant server_.
 
 [The interactions in the DPDQ system]
 
@@ -332,23 +332,21 @@ done using public key fingerprints and cryptographic signatures,
 avoiding the use of passwords that can be forgotten or inadvertently
 shared.
 
-Features
---------
 
--   Secure
+Features
+
+-   SECURE
     -   Public key encryption based identification and authentication:
         no passwords transmitted.
     -   All communication is encrypted.
     -   Allows choice of most suitable database management system.
-
--   Privacy Preserving
+-   PRIVACY PRESERVING
     -   Differentially private with accounting of risk expenditure over
         time that supports scriptable risk accounting policies.
     -   Allows guarantees of privacy that are separate from guarantees
         of access control.
     -   Allows guarantees of de-identification.
-
--   Easily deployable
+-   EASILY DEPLOYABLE
     -   Simple setup that requires only python and GPG.
     -   Supports many database backends "out of the box", including
         SQLite, MySQL, Postgresql, Oracle, SQL Server, and Firebird.
@@ -359,37 +357,32 @@ Features
         -   risk accounting policies,
         -   query types, and
         -   datasets.
-
     -   Runs on any platform python and GPG can run on (includes
         Windows, Linux, MacOS X, CentOS, BSD Unix, System V Unix).
     -   Oriented towards data sets and is only dependent on dataset
         metadata being available, but otherwise agnostic to underlying
         database schema. This allows control and flexible definitions of
         data sets.
-
--   Flexible
+-   FLEXIBLE
     -   Supports hot-pluggable query types and data sets.
     -   Supports hot-pluggable risk accounting policies.
     -   Minimal deployment does not require any additional database
         software as SQLite is distributed with python.
-
--   Scalable
+-   SCALABLE
     -   Supports distribution of workload:
         -   datasets can be distributed among different databases,
         -   multiple servers can use the same database, and
         -   multiple query processing servers can share the same risk
             accounting server.
-
     -   Centralized management is possible through the use of
         distributed file systems and networked databases.
     -   Adaptation to any access control system is possible by using the
-        DPDQ web-server behind a reverse proxy.
-
--   Open source Allows community involvement as well as site-specific
+        _DPDQ_ web-server behind a reverse proxy.
+-   OPEN SOURCE Allows community involvement as well as site-specific
     customization
 
-Using DPDQ
-----------
+
+Using _DPDQ_
 
 Pre-deployment
 
@@ -398,7 +391,7 @@ and signing, and setting up a risk accounting database.
 
 Dependencies
 
-DPDQ is implemented in Python, and depends on the availability of
+_DPDQ_ is implemented in Python, and depends on the availability of
 
 -   python version 2.7, version 2.7.3 or newer
 -   the gnu privacy guard
@@ -418,27 +411,27 @@ available.
 
 Installation
 
-The DPDQ distribution is available from the download page, and can be
+The _DPDQ_ distribution is available from the download page, and can be
 installed by any of the standard ways of installing python packages. An
 example is:
 
      $ pip install dpdq-VERSION.tar.gz
 
 where VERSION is the version of the package file downloaded. The above
-command will also download and install the python packages on which DPDQ
-depends.
+command will also download and install the python packages on which
+_DPDQ_ depends.
 
 Information security
 
 Identification, authentication, and communications security
 
-In a computer system, identification is a user giving the system an
+In a computer system, _identification_ is a user giving the system an
 identity "token" (typically a username), i.e., saying "I am Alice".
-Authentication is the system satisfying iself (or rather its owners)
+_Authentication_ is the system satisfying iself (or rather its owners)
 that the identification is true. Communications security is restricting
 communication to intended recipients.
 
-In DPDQ, all communication between clients, query processing servers,
+In _DPDQ_, all communication between clients, query processing servers,
 and risk accounting servers, is by passing messages which contain a
 request (e.g., a query for information in a dataset) or a response. A
 client can act on behalf of a user, and we will use client and user
@@ -448,7 +441,7 @@ determination of the user associated with the sender of the message, and
 authentication is verification of the sender. Further we associate
 rights with users, and an unknown user has no rights.
 
-For identification, authorization, and communications security, DPDQ
+For identification, authorization, and communications security, _DPDQ_
 depends on public key encryption, and uses The Gnu Privacy Guard for
 this. In public key encryption schemes, each user has a (public key,
 private key) pair with the important property that a message encrypted
@@ -461,12 +454,12 @@ it (or a unique representation of it) with her own private key. Bob can
 then verify Alice as the sender by checking that he can decrypt the
 message with Alice's public key.
 
-A DPDQ user is identified by his/her public key and signatures for
+A _DPDQ_ user is identified by his/her public key and signatures for
 authenticating the sender. This allows the separation of computer system
-users from DPDQ users allowing QP and RA to run in the same computer
+users from _DPDQ_ users allowing QP and RA to run in the same computer
 system users process space. Communications security is achieved by
 encrypting messages with the recipients public key. An advantage of the
-public key encryption use in DPDQ is that once the keys have been
+public key encryption use in _DPDQ_ is that once the keys have been
 distributed, further communication and system use does not rely on
 passwords that can be lost, forgotten, and must be entered every time a
 user wants to log in. The disadvantage is that a user's keys must be
@@ -506,7 +499,7 @@ allowing fine-grained control of information type release.
 
 Database security
 
-DPDQ can be used with any database that sqlalchemy supports. These
+_DPDQ_ can be used with any database that sqlalchemy supports. These
 include SQLite, MySQL, Postgresql, Oracle, SQL Server, and Firebird.
 Communication with these is done through [Python DBAPI
 v2.0(http://www.python.org/topics/database/DatabaseAPI-2.0.html)
@@ -543,7 +536,7 @@ threshold, eps is a query expenditure, and time is the timestamp RA put
 on this expenditure. For sqlite the following SQL statements create
 these tables:
 
-~~~~ {.sql}
+``` {.sql}
 CREATE TABLE history (
     id VARCHAR(60), 
     eps FLOAT NOT NULL, 
@@ -557,7 +550,7 @@ CREATE TABLE users (
     qt FLOAT NOT NULL, 
     PRIMARY KEY (id)
 );
-~~~~
+```
 
 The script dpdq_riskuser.py (see Synopsis) can be used for risk database
 management, and will create the database when adding a user if a
@@ -573,7 +566,7 @@ has to be monitored.
 
 Adding data sets
 
-As presented in the section on features, DPDQ operates on datasets as
+As presented in the section on features, _DPDQ_ operates on datasets as
 opposed to databases, even though the datasets happen to be stored in
 databases. This allows the system to be agnostic to the underlying
 database schema, with the exception to dataset metadata tables explained
@@ -595,9 +588,7 @@ information about
         -   for each categorical value
             -   name
             -   textual description
-
         -   value ranges for numeric data
-
     -   which differentially private methods are known to be appropriate
         for this dataset
 
@@ -633,7 +624,7 @@ processors.set has the names of its known appropriate query types
 
 SQLite statements for creating these tables are:
 
-~~~~ {.sql}
+``` {.sql}
 CREATE TABLE datasets (
     name VARCHAR(50) NOT NULL, 
     size INTEGER NOT NULL,
@@ -669,7 +660,7 @@ CREATE TABLE processors (
     type INTEGER NOT NULL, 
     FOREIGN KEY("set") REFERENCES datasets (name)
 );
-~~~~
+```
 
 When adding a dataset these tables must be updated as meta data is
 needed for three things:
@@ -774,31 +765,25 @@ The available commands are:
 
 help [<command>]
     get help. If a command is given, help is given on that command.
-dataset DATASET
-    select the dataset DATASET to query.
-columns COLUMN [COLUMN]*
+    dataset DATASET
+    select the dataset DATASET to query. columns COLUMN [COLUMN]*
     set columns (data attributes) you are interested in. If left unset
-    all columns are used.
-predicate PREDICATE
+    all columns are used. predicate PREDICATE
     input selection predicate. A predicate is a disjunction of a
     possibly negated conjunction of terms. Example:
     gender == male and age > 30 or not gender == female and age > 30.
     Note that categorical values should not be quoted. An empty
-    predicate selects all.
-type TYPE
+    predicate selects all. type TYPE
     sets query type. A query type is the information item to be computed
     from the rows in the dataset that match the predicate.
-value PARAMETER VALUE
-    set parameter for query type.
-run [OUTFILE]
+    value PARAMETER VALUE
+    set parameter for query type. run [OUTFILE]
     send query to query server. If OUTFILE is given, the computed result
-    is copied to the file.
-list datasets | types
+    is copied to the file. list datasets | types
     list available datasets or query types.
-show settings | dataset DATASET | type TYPE | risk
+    show settings | dataset DATASET | type TYPE | risk
     show settings or info about dataset, query type, or user risk
-    levels.
-quit
+    levels. quit
     quit the client.
 
 The client can also read a list of commands from standard input if given
@@ -821,15 +806,15 @@ the output looks similar to this:
 
 Using the web server/graphical web user interface
 
-DPDQ also comes with a web-server dpdq_web.py. The web-server acts as a
-client to a query processor, and any connecting client "inherits" the
+_DPDQ_ also comes with a web-server dpdq_web.py. The web-server acts as
+a client to a query processor, and any connecting client "inherits" the
 web-server's communication rights (see rights).
 
 [The web-server QP client]
 
-Important: as the web server is designed to run behind a reverse proxy
+IMPORTANT: as the web server is designed to run behind a reverse proxy
 (see Implementing external user management) that takes care of securing
-external communication, as well as authentication, it does not perform
+external communication, as well as authentication, it does NOT perform
 any authentication of connecting clients.
 
 It is however possible to use the web-server on a single user machine
@@ -838,34 +823,34 @@ firewall to restrict connections to the web server to originate from the
 local machine. On a linux machine using iptables this can be done for
 port 8082 by:
 
-~~~~ {.bash}
+``` {.bash}
 $ iptables -A INPUT -i lo -p tcp --dport 8082 -j ACCEPT
 $ iptables -A INPUT -p tcp --dport 8082 -j DROP
-~~~~
+```
 
 We can then replace
 
-~~~~ {.bash}
+``` {.bash}
 $ dpdq_cli.py -k Alice -u Demo
-~~~~
+```
 
 with
 
-~~~~ {.bash}
+``` {.bash}
 $ dpdq_web.py -k Alice -u Demo -p 8082
-~~~~
+```
 
 or
 
-~~~~ {.bash}
+``` {.bash}
 $ dpdq_cli.py -k Alice
-~~~~
+```
 
 with
 
-~~~~ {.bash}
+``` {.bash}
 $ dpdq_web.py -k Alice -u Alice --use-alias-fingerprint -p 8082
-~~~~
+```
 
 and point the browser to localhost:8082.
 
@@ -986,7 +971,7 @@ Implementing external user management
 
 Larger organizations often have their own organization-wide
 identification and authentication systems. An example is Active
-Directory. In order to incorporate DPDQ into such a system, access to
+Directory. In order to incorporate _DPDQ_ into such a system, access to
 the client can be regulated using the external system. For example a
 web-server can act as a client, and access to the web-server (client
 services) can be controlled by the external system. In this scenario,
@@ -994,15 +979,15 @@ the web-server is the sole client with communication rights for possibly
 a multitude of QP instances. Information query rights are however still
 maintained on a per user-base in the Risk accountants risk database, and
 the alias field is used to communicate with the QP. Any mechanism can be
-used to propagate user query rights to DPDQ by inserting user
+used to propagate user query rights to _DPDQ_ by inserting user
 credentials into the risk databases used.
 
-To support external user management, DPDQ provides a web-server
+To support external user management, _DPDQ_ provides a web-server
 dpdq_web.py (see Synopsis and use description. This web server does not
 do any user authentication, nor does it support encrypted communication
 with its clients. This is because it is designed to be used behind a
-reverse proxy that takes care of these things. The user identity to use
-is read from the REMOTE_USER header variable.
+_reverse proxy_ that takes care of these things. The user identity to
+use is read from the REMOTE_USER header variable.
 
 A simple example setup using dpdq_web.py
 
@@ -1025,7 +1010,7 @@ home directory ~dpdq being /home/dpdq has directories
 
 All of these directories should have restricted permissions.
 
-Furthermore, we assume that DPDQ is installed, and that we are running
+Furthermore, we assume that _DPDQ_ is installed, and that we are running
 an apache2 web server on the machine.
 
 In order to require basic authentication (or adapt for LDAP if active
@@ -1050,10 +1035,10 @@ could be used.
 We now restrict connections to the web server (assuming this server is
 listening to port 8082) to originate from the local machine by:
 
-~~~~ {.bash}
+``` {.bash}
 $ iptables -A INPUT -i lo -p tcp --dport 8082 -j ACCEPT
 $ iptables -A INPUT -p tcp --dport 8082 -j DROP
-~~~~
+```
 
 Then if our machine has address ptg.ucsd.edu (and assuming apache2 has
 been configured to allow rewrite from .htaccess files) we add the two
@@ -1071,11 +1056,11 @@ text definition of a python dictionary keyed on address:port strings
 with display names as values. For our example, this file qpservers.txt
 contains:
 
-~~~~ {.python}
+``` {.python}
 {
    'localhost:8123' : 'Demo'
 }
-~~~~
+```
 
 What remains is to add a user (in this case 'Demo'), and start the
 servers. This can be done by:
@@ -1119,7 +1104,7 @@ user dpdq on a linux/unix type system with world readable home directory
     All of these directories should have restricted permissions.
 
 Furthermore, we assume that cgi scripts are run as the www-data system
-user, and that DPDQ is installed.
+user, and that _DPDQ_ is installed.
 
 In order to require basic authentication (or adapt for LDAP if active
 directory is wanted), we make sure that there exists a file
@@ -1187,8 +1172,8 @@ respective databases as well. If the web-server is compromised, neither
 the risk database nor the data warehouse then are accessible except by
 the encrypted protocol.
 
+
 Details
--------
 
 Differential Privacy
 
@@ -1200,14 +1185,13 @@ privacy risk resulting from disclosing information computed by a
 particular randomized method. Formally, we define differential privacy
 as:
 
-  A randomized algorithm A is \epsilon-differentially private if for any
-  measurable set of outputs S,
-  P\left( A ( D ) \in S \right)    \le    e^{\epsilon}    P\left( A( D' ) \in S \right),
-  where D, D' are any two databases of n records that share n-1 records
-  in common. The probability is taken over the randomness in A.
+  A randomized algorithm A is ϵ-differentially private if for any
+  measurable set of outputs S, P(A(D) ∈ S) ≤ e^ϵ^P(A(D′) ∈ S),  where
+  D, D′ are any two databases of n records that share n − 1 records in
+  common. The probability is taken over the randomness in A.
 
 In particular, if the information s computed by a method A applied to
-data D, i.e., s = A(D), differential privacy measures the probability of
+data D, i.e., s = A(D), differential privacy measures the probability of
 learning anything about any record r in D, when given access to s and
 all records of D except r, independent of outside information. Note that
 learning anything about r also includes the identity of the person r
@@ -1215,8 +1199,8 @@ belongs to, and consequently differential privacy also quantifies
 de-identification. What this means is that one can give a person a
 guarantee that data participation and the subsequent disclosure of
 analysis results will not increase the risk of anyone learning anything
-about her/him by more than a factor e^{\epsilon}. The value \epsilon can
-be chosen to comply with privacy policy.
+about her/him by more than a factor e^ϵ^. The value ϵ can be chosen to
+comply with privacy policy.
 
 Protecting privacy inherently means a degradation of the quality of
 information that can be disclosed. For differential privacy, this
@@ -1254,34 +1238,26 @@ before transmission via the Transmission Control Protocol(TCP).
 In the following format specifications
 
 tuple(a,b,...,c)
-    means a python tuple containing a,b,...,c
-tuple(t)
-    means a python tuple with elements of type t
-dict(a,b)
+    means a python tuple containing a,b,...,c tuple(t)
+    means a python tuple with elements of type t dict(a,b)
     means the python dictionary with key type a and value type b.
-{ ... }
+    { ... }
     means an explicitly given python dictionary that must have exactly
-    the keys listed.
-|
-    separates alternatives
-list(a)
-    means a non-empty python list of a elements
-empty_list
-    means an empty python list
-string
-    is a python string
-float
-    is a python float
-number
+    the keys listed. |
+    separates alternatives list(a)
+    means a non-empty python list of a elements empty_list
+    means an empty python list string
+    is a python string float
+    is a python float number
     is either a float or an integer
 
 Client -- Query processing server
 
 The interaction between client and server consists of a number of rounds
-where the client sends a string representation of a request to the
-server, and the server sends a string representation of an answer back.
-The client can either request metadata, the user's current risk usage,
-or an answer to a dataset query.
+where the client sends a string representation of a _request_ to the
+server, and the server sends a string representation of an _answer_
+back. The client can either request metadata, the user's current risk
+usage, or an answer to a dataset query.
 
 Format specification:
 
@@ -1303,13 +1279,13 @@ processing server.
 
 The first element in the answer, status, is a status code:
 
-~~~~ {.python}
+``` {.python}
 QP_OK             = 0 # everything is fine
 QP_ERROR_BUDGET   = 1 # budget exceeded
 QP_ERROR_RA       = 2 # user not found in risk database
 QP_ERROR_QUERY    = 3 # malformed query
 QP_ERROR_INTERNAL = 4 # internal error (this is bad)
-~~~~
+```
 
 The second element in the answer is the request type that this is an
 answer to. If the status code is QP_OK, the third element response is a
@@ -1445,12 +1421,12 @@ be answered, and one to query a users risk information.
 
 The check query can be formulated as
 
-status equals 1 if  
-epsilon is not more than the user's per query threshold  
-and  
+status equals 1 if
+epsilon is not more than the user's per query threshold
+and
 the user's current total risk expended + epsilon is not more total risk
-allowed  
-otherwise  
+allowed
+otherwise
 status equals 0
 
 The user information requested by the info query is
@@ -1489,26 +1465,25 @@ Adding new query types
 
 The query processor comes with three query types preinstalled. The
 first, simple_count, produces a noisy count of rows matching the query
-predicate rows by adding a Laplace(2/\epsilon, 0) distributed random
-deviate and rounding the result to the nearest integer (see the section
-on differential privacy for an explanation of the parameter \epsilon).
-The second, user_pref_count, also returns a perturbation of the true
-number of rows that match the quer predicate. The perturbation and the
-parameters can be explored here and are described in detail in the
-following paper:
+predicate rows by adding a Laplace(2/ϵ, 0) distributed random deviate
+and rounding the result to the nearest integer (see the section on
+differential privacy for an explanation of the parameter ϵ). The second,
+user_pref_count, also returns a perturbation of the true number of rows
+that match the quer predicate. The perturbation and the parameters can
+be explored here and are described in detail in the following paper:
 
-Protecting count queries in study design.  
-Vinterbo SA, Sarwate AD, Boxwala AA.  
+Protecting count queries in study design.
+Vinterbo SA, Sarwate AD, Boxwala AA.
 J Am Med Inform Assoc. 2012 Sep 1;19(5):750-7. Epub 2012 Apr 17.
 
 The third, histogram, first discretizes the numerical columns, produces
-a histogram, and adds Laplace(2/\epsilon, 0) to each count (including
-the 0-valued entries). Finally entries with a value less than a value
-A \log(n)/\epsilon are removed. The approach is based on results in the
-following paper:
+a histogram, and adds Laplace(2/ϵ, 0) to each count (including the
+0-valued entries). Finally entries with a value less than a value
+Alog(n)/ϵ are removed. The approach is based on results in the following
+paper:
 
-Jing Lei.  
-Differentially private m-estimators.  
+Jing Lei.
+Differentially private m-estimators.
 NIPS 2011, pages 361-369, 2011.
 
 The query processing server can load new metadata from its database,
@@ -1519,23 +1494,21 @@ SIGUSR1 signal. The given python module must contain a python dictionary
 processors with the new query type names as keys, and dict values as
 follows:
 
-~~~~ {.python}
+``` {.python}
 { 'name' : name,
   'f'    : f,
   'query_edit' : edit_f, # optional field
   'meta' : f_meta }
-~~~~
+```
 
 where
 
 name
-    is the same as the key for this dict in processors.
-f
+    is the same as the key for this dict in processors. f
     is a function f(eps, parms, meta, result) where
 
     eps
-        is the differential privacy risk \epsilon allowed
-    parms
+        is the differential privacy risk ϵ allowed parms
         is a list of (parameter_name, value) tuples as given in the
         query. If the query type has a field query_edit, the parms list
         gets a
@@ -1547,18 +1520,17 @@ f
 
     meta
         is the metadata for the queried dataset as described in the
-        metadata specification
-    result
+        metadata specification result
         is an iterator for data row tuples extracted from the dataset.
         The row entries correspond to the attributes in the query and
         all satisfy the query predicate
 
 edit_f
+
     is a function edit_f(predicate, attributes) where
 
     predicate
-        is the predicate part of the query sent (see Query)
-    attributes
+        is the predicate part of the query sent (see Query) attributes
         is the attribute part of the query sent (see Query)
 
     the edit_f function, if it exists, is called to allow the query type
@@ -1570,7 +1542,7 @@ f_meta
     is python dictionary containing the metadata for processor as
     specified in the metadata specification.
 
-Note that dataset metadata should be updated to reflect the addition of
+NOTE that dataset metadata should be updated to reflect the addition of
 a new query type, as it otherwise will not be available for application.
 
 An example of how a loadable query type can be implemented can be found
@@ -1580,7 +1552,7 @@ Risk accounting policies
 
 The default risk accounting policy described aboveis implemented as:
 
-~~~~ {.python}
+``` {.python}
 def threshold_policy(eps, tt, qt, total_sum, history):
     '''implement the threshold policy
 
@@ -1593,23 +1565,23 @@ def threshold_policy(eps, tt, qt, total_sum, history):
 
     implements: eps + total_sum <= tt and eps <= qt'''
     return eps + total_sum <= tt and eps <= qt
-~~~~
+```
 
 With interface dict:
 
-~~~~ {.python}
+``` {.python}
 threshold_policy = {
     'name' : 'threshold',
     'implementation' : threshold_policy,
     'description' : threshold_policy.__doc__
     }
-~~~~
+```
 
 and dict of available policy interfaces:
 
-~~~~ {.python}
+``` {.python}
 policies = { 'threshold' : threshold_policy }
-~~~~
+```
 
 The package that implements new policies to be loaded must implement the
 same interface dict and also contain a policies dict as shown. If the
@@ -1618,12 +1590,12 @@ contain an element policy containing the name of the policy to be named
 . For example, to load a package with the above contents and start using
 threshold in response to a signal, the following line must be added:
 
-~~~~ {.python}
+``` {.python}
 policy = 'threshold'
-~~~~
+```
+
 
 Miscellaneous
--------------
 
 Automated deployment example
 
@@ -1664,8 +1636,8 @@ contains the file.
 
 The query type depends on R, rpy2, and the R library PrivateLR.
 
+
 Acknowledgements
-----------------
 
 This implementation was supported by NIH Roadmap for Medical Research
 grant U54 HL108460 and NIH grant R01 LM07273.
