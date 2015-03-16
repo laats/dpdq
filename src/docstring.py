@@ -7,21 +7,15 @@
     Staal A. Vinterbo (sav@ucsd.edu)
 **Copyright**
     2013-3015 Staal A. Vinterbo
+**Homepage**
+    Documentation
+    `http://laats.github.io/sw/dpdq <http://laats.github.io/sw/dpdqhomepage>`__
 **Availability**
     GPL http://www.gnu.org/copyleft/gpl.html
 **Download**
-    Download installable Python package `here <./dist/>`__.
-
-.. raw:: html
-
-   <!-- **Source Code** -->
-
-.. raw:: html
-
-   <!--  ~ Git clone URL: `git://ptg.ucsd.edu/dpdq.git` -->
-
-**Printer Friendly PDF version of this document:**
-    `here <dpdq.pdf>`__.
+    Python package http://laats.github.io/sw/dpdq/dist/
+**Source Code**
+    Git repository: https://github.com/laats/dpdq
 
 Synopsis
 --------

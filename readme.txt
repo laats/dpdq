@@ -4,14 +4,17 @@ AUTHOR
 COPYRIGHT
     2013-3015 Staal A. Vinterbo
 
+HOMEPAGE
+    Documentation http://laats.github.io/sw/dpdq
+
 AVAILABILITY
     GPL http://www.gnu.org/copyleft/gpl.html
 
 DOWNLOAD
-    Download installable Python package here.
+    Python package http://laats.github.io/sw/dpdq/dist/
 
-PRINTER FRIENDLY PDF VERSION OF THIS DOCUMENT:
-    here.
+SOURCE CODE
+    Git repository: https://github.com/laats/dpdq
 
 
 Synopsis
