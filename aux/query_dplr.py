@@ -6,7 +6,7 @@
 # Description:  Pluggable query type for DPDQ implementing logistic regression
 # Author:       Staal Vinterbo
 # Created:      Fri Jun  7 07:38:27 2013
-# Modified:     Mon Sep 16 09:24:27 2013 (Staal Vinterbo) staal@mats
+# Modified:     Wed Nov 13 12:33:27 2013 (Staal Vinterbo) staal@mats
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -51,7 +51,7 @@ def logistic_regression(eps, parms, result):
     fml = ((oattrs[0] if oattrs else col_names[-1]) + ' ~ .').encode('ascii', 'ignore')
 
     # run dplr and return coefficients with names
-    lam = pdict['lambda'] if pdict['lambda'] != None else ro.NA_Real
+    lam = pdict['lambda'] if pdict['lambda'] not in [None, '', ' ', 0] else ro.NA_Real
     res = dplr.dplr(ro.Formula(fml), ro.DataFrame(dfd), lam, eps=eps)
     d = dict(res.iteritems())     
     return dict(zip(d['par'].names, d['par']))

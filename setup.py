@@ -6,7 +6,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Wed May  8 21:41:31 2013
-# Modified:     Thu Sep 26 13:43:59 2013 (Staal Vinterbo) staal@mats
+# Modified:     Sun Mar 15 23:09:37 2015 (Staal Vinterbo) staal@mats.gateway.pace.com
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -43,7 +43,7 @@ setup(name=pname,
       version=versionshort,
       author="Staal A. Vinterbo",
       author_email="sav@ucsd.edu",
-      url = "http://ptg.ucsd.edu/~staal/dpdq/",
+      url = "http://laats.github.io/sw/dpdq/",
       license = "http://www.gnu.org/copyleft/gpl.html",
       platforms = ["any"],
       description = doclines[0],

@@ -1,26 +1,28 @@
 % DPDQ: Differentially Private Data Queries
 % Staal A. Vinterbo
-% Time-stamp: <2013-09-26 13:45:24 staal>
+% Time-stamp: <2015-03-09 18:08:10 staal>
 
 <!-- # DPDQ: Differentially Private Data Queries -->
 
 **Author**
   ~ Staal A. Vinterbo (<sav@ucsd.edu>)
+  
 **Copyright**
-  ~ 2013 Staal A. Vinterbo
+  ~ 2013-3015 Staal A. Vinterbo
+  
 **Availability**
   ~ GPL <http://www.gnu.org/copyleft/gpl.html>
-**Homepage**
-  ~ Homepage: <http://ptg.ucsd.edu/~staal/dpdq>
+  
 **Download**
   ~ Download installable Python package [here][download].
-**Source Code**
-  ~ Git clone URL: `git://ptg.ucsd.edu/dpdq.git`
+  
+<!-- **Source Code** -->
+<!--  ~ Git clone URL: `git://ptg.ucsd.edu/dpdq.git` -->
 **Printer Friendly PDF version of this document:**
   ~ [here](dpdq.pdf).
 
-[download]: http://ptg.ucsd.edu/~staal/dpdq/dist "DPDQ Repository"
-[homepage]: http://ptg.ucsd.edu/~staal/dpdq      "DPDQ Homepage"
+[download]: ./dist/ "DPDQ Repository"
+[homepage]: http://laats.github.io/sw/dpdq      "DPDQ Homepage"
 
 
 
