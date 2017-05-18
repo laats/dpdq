@@ -7,7 +7,7 @@
 #               /tmp/dpdq/[cqr]
 # Author:       Staal Vinterbo
 # Created:      Fri May 10 16:44:21 2013
-# Modified:     Fri Mar 20 15:31:37 2015 (Staal Vinterbo) staal@mats.gateway.pace.com
+# Modified:     Thu May 18 12:20:19 2017 (Staal Vinterbo) staal@klump
 # Language:     Shell-script
 # Package:      N/A
 # Status:       Experimental
@@ -54,32 +54,38 @@ if [ ! -d ${DROOT}/c ]; then
     echo "sharing and signing keys..."
 
     # share public client key with servers
+    echo "sharing public client key with servers..."
     gpg -q --no-tty --homedir ${DROOT}/c --export --batch 2> /dev/null | \
 	gpg -q --no-tty --homedir ${DROOT}/r --import --batch &> /dev/null
     gpg -q --no-tty --homedir ${DROOT}/c --export --batch 2> /dev/null | \
 	gpg -q --no-tty --homedir ${DROOT}/q --import --batch &> /dev/null
 
     # share public server keys with client
+    echo "sharing public server keys with client..."
     gpg -q --no-tty --homedir ${DROOT}/r --export --batch 2> /dev/null | \
 	gpg -q --no-tty --homedir ${DROOT}/c --import --batch &> /dev/null
     gpg -q --no-tty --homedir ${DROOT}/q --export --batch 2> /dev/null | \
 	gpg -q --no-tty --homedir ${DROOT}/c --import --batch &> /dev/null
 
     # share server public keys among themselves
+    echo "share server public keys among themselves..."
     gpg -q --no-tty --homedir ${DROOT}/r --export --batch 2> /dev/null | \
 	gpg -q --no-tty --homedir ${DROOT}/q --import --batch &> /dev/null
     gpg -q --no-tty --homedir ${DROOT}/q --export --batch 2> /dev/null | \
 	gpg -q --no-tty --homedir ${DROOT}/r --import --batch &> /dev/null
 
     # client signs server keys
+    echo "client signs server keys..."
     echo y | gpg -q --no-tty --homedir ${DROOT}/c --command-fd 0 --sign-key QueryServer &> /dev/null
     echo y | gpg -q --no-tty --homedir ${DROOT}/c --command-fd 0 --sign-key RiskAccountant &> /dev/null
 
     # servers sign each others' keys
+    echo "servers sign each others' keys..."
     echo y | gpg -q --no-tty --homedir ${DROOT}/r --command-fd 0 --sign-key QueryServer &> /dev/null
     echo y | gpg -q --no-tty --homedir ${DROOT}/q --command-fd 0 --sign-key RiskAccountant &> /dev/null
 
     # servers sign client key
+    echo "servers sign client key..."
     echo y | gpg -q --no-tty --homedir ${DROOT}/r --command-fd 0 --sign-key Alice &> /dev/null
     echo y | gpg -q --no-tty --homedir ${DROOT}/q --command-fd 0 --sign-key Alice &> /dev/null
 fi

@@ -6,7 +6,7 @@
 # Description:  Web interface, uses Jinja2 templating
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Mon Jul  8 10:00:50 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu May 18 12:09:37 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -188,7 +188,7 @@ class InfoQ(object):
 def init_resource(gpghome, key_id, qp_id, known_hosts, homepage,
                   alias='Demo', usefp = False):
 
-    gpg = gnupg.GPG(gnupghome=gpghome)
+    gpg = gnupg.GPG(homedir=gpghome)
     state = State(gpg, key_id, qp_id)
 
     aliasid = alias

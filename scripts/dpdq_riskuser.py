@@ -7,7 +7,7 @@
 #               gpg key.
 # Author:       Staal Vinterbo
 # Created:      Thu Apr 11 19:53:50 2013
-# Modified:     Sun Jun 23 15:34:14 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu May 18 12:08:34 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if not args.nokey:
-        gpg = gnupg.GPG(gnupghome=args.gpghome)
+        gpg = gnupg.GPG(homedir=args.gpghome)
         userkey = findfp(args.user, gpg) #, True)
         userinfo = finduserinfo(args.user, gpg) #, True)
         if userkey == None or userinfo == None:

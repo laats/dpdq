@@ -7,7 +7,7 @@
 #               add the keys to directory 
 # Author:       Staal Vinterbo
 # Created:      Tue Apr  9 12:39:44 2013
-# Modified:     Thu Jun 13 16:21:53 2013 (Staal Vinterbo) staal@dink
+# Modified:     Thu May 18 12:35:27 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -28,9 +28,11 @@ keys = dict(zip(map(lambda x : x[0], who_all), who_all))
 
 def gkey(who, gpg):
     for (a,b,e) in who:
-        key = gpg.gen_key(gpg.gen_key_input(name_real = a,
-                                            name_comment = b,
-                                            name_email = e))
+        keyinput = gpg.gen_key_input(name_real = a,
+                                     name_comment = b,
+                                     name_email = e,
+                                     key_type = 'RSA')
+        key = gpg.gen_key(keyinput)
 
 
 if __name__ == "__main__":
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    gpg = gnupg.GPG(gnupghome=args.directory)
+    gpg = gnupg.GPG(homedir=args.directory)
 
     gkey([keys[args.key]], gpg)    
     print "generated: ", gpg.list_keys()

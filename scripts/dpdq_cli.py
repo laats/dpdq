@@ -6,7 +6,7 @@
 # Description:  Encrypted echo client
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 20:32:04 2013
-# Modified:     Tue Jun 25 13:33:20 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu May 18 12:07:21 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         print 'arguments:', vars(args)
 
     alias = None
-    gpg = gnupg.GPG(gnupghome=args.gpghome)
+    gpg = gnupg.GPG(homedir=args.gpghome)
         
 
     if args.debug:

@@ -6,7 +6,7 @@
 # Description:  Utils for using gnugp
 # Author:       Staal Vinterbo
 # Created:      Thu Apr 11 21:56:02 2013
-# Modified:     Sun Jun 23 16:05:02 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu May 18 12:59:19 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -76,7 +76,9 @@ def unwrap(gpg, cipher):
     '''decrypt and verify'''
     clear = gpg.decrypt(cipher)
     if ( (not clear.valid) or clear.trust_level is None or
-         clear.trust_level < clear.TRUST_FULLY or clear.key_status is not None):
+         clear.trust_level < clear.TRUST_FULLY):
+        return None
+    if not clear.ok:
         return None
     if clear.username != None and len(clear.username) > 0: # in case we don't have the username
         uname = clear.username.split()[0]
@@ -86,7 +88,7 @@ def unwrap(gpg, cipher):
 
 def wrap(gpg, fromfp, tofp, clear):
     '''encrypt and sign'''
-    return str(gpg.encrypt(clear, tofp, sign=fromfp))
+    return str(gpg.encrypt(clear, tofp, default_key=fromfp))
 
     
     

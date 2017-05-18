@@ -24,7 +24,7 @@
 #                 
 # Author:       Staal Vinterbo
 # Created:      Thu Apr 11 16:26:37 2013
-# Modified:     Mon Jun 24 09:46:45 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu May 18 12:08:50 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     logging.basicConfig(filename=args.logfile,level=logging.INFO,
                         format='%(asctime)s:%(name)s:%(levelname)s:%(message)s')
 
-    gpg = gnupg.GPG(gnupghome=args.gpghome)
+    gpg = gnupg.GPG(homedir=args.gpghome)
    
     print "Starting Risk Accountant! "
     print "GPG directory:", args.gpghome

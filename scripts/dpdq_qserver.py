@@ -6,7 +6,7 @@
 # Description:  Encrypted query server, by default echo. Handles multiple clients
 # Author:       Staal Vinterbo
 # Created:      Mon Apr  8 16:05:34 2013
-# Modified:     Mon Jun 24 12:05:27 2013 (Staal Vinterbo) staal@mats
+# Modified:     Thu May 18 12:08:09 2017 (Staal Vinterbo) staal@klump
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
  
     try:
-        gpg = gnupg.GPG(gnupghome=args.gpghome)
+        gpg = gnupg.GPG(homedir=args.gpghome)
         print "Starting! "
         print "gpghome:", args.gpghome
         print "me:", args.key
